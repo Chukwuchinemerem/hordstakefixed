@@ -1,0 +1,13 @@
+/* Hordstake - Main stylesheet */
+/* Most styles are inline via Tailwind CDN in templates */
+/* This file exists to ensure collectstatic works correctly */
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+.line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}

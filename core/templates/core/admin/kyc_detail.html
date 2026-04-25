@@ -1,0 +1,72 @@
+{% extends 'core/dashboard_base.html' %}
+{% block page_title %}KYC Review: {{ kyc.user.username }}{% endblock %}
+{% block page_subtitle %}Review submitted identity documents{% endblock %}
+{% block sidebar_nav %}
+<a href="{% url 'admin_dashboard' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Dashboard</a>
+<a href="{% url 'admin_kyc_list' %}" class="sidebar-link active"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>KYC Management</a>
+{% endblock %}
+{% block content %}
+<div class="mb-5"><a href="{% url 'admin_kyc_list' %}" class="text-sm hover:text-white transition-colors" style="color:#2563EB;font-family:DM Sans,sans-serif;text-decoration:none;">← Back to KYC List</a></div>
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+  <!-- Info Panel -->
+  <div class="rounded-2xl p-6 card-dark">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-12 h-12 rounded-xl flex items-center justify-center font-display font-bold text-lg" style="background:#1E3A8A;color:#93C5FD;">{{ kyc.user.username|first|upper }}</div>
+      <div><h3 class="font-display font-bold text-white text-lg">{{ kyc.user.username }}</h3><p class="text-xs" style="color:#64748B;font-family:DM Sans,sans-serif;">{{ kyc.user.email }}</p></div>
+    </div>
+    <div class="space-y-3">
+      <div class="flex justify-between p-3 rounded-lg" style="background:rgba(255,255,255,0.04);"><span class="text-xs" style="color:#64748B;font-family:DM Sans,sans-serif;">Full Name</span><span class="text-white text-sm font-semibold" style="font-family:DM Sans,sans-serif;">{{ kyc.full_name }}</span></div>
+      <div class="flex justify-between p-3 rounded-lg" style="background:rgba(255,255,255,0.04);"><span class="text-xs" style="color:#64748B;font-family:DM Sans,sans-serif;">Date of Birth</span><span class="text-white text-sm" style="font-family:DM Sans,sans-serif;">{{ kyc.date_of_birth|date:"M d, Y" }}</span></div>
+      <div class="p-3 rounded-lg" style="background:rgba(255,255,255,0.04);"><p class="text-xs mb-1" style="color:#64748B;font-family:DM Sans,sans-serif;">Address</p><p class="text-white text-sm" style="font-family:DM Sans,sans-serif;">{{ kyc.address }}</p></div>
+      {% if kyc.ssn %}<div class="flex justify-between p-3 rounded-lg" style="background:rgba(255,255,255,0.04);"><span class="text-xs" style="color:#64748B;font-family:DM Sans,sans-serif;">SSN</span><span class="text-white text-sm font-mono">{{ kyc.ssn }}</span></div>{% endif %}
+      <div class="flex justify-between p-3 rounded-lg" style="background:rgba(255,255,255,0.04);"><span class="text-xs" style="color:#64748B;font-family:DM Sans,sans-serif;">Submitted</span><span class="text-white text-sm" style="font-family:DM Sans,sans-serif;">{{ kyc.submitted_at|date:"M d, Y H:i" }}</span></div>
+      <div class="flex justify-between p-3 rounded-lg" style="background:rgba(255,255,255,0.04);"><span class="text-xs" style="color:#64748B;font-family:DM Sans,sans-serif;">Status</span>
+        {% if kyc.status == 'approved' %}<span class="badge-success">✅ Approved</span>
+        {% elif kyc.status == 'pending' %}<span class="badge-pending">🟡 Pending</span>
+        {% else %}<span class="badge-error">🔴 Rejected</span>{% endif %}
+      </div>
+    </div>
+    {% if kyc.status == 'pending' %}
+    <div class="mt-5 space-y-3">
+      <a href="{% url 'admin_kyc_approve' kyc.pk %}" class="btn-blue w-full py-3.5 text-sm block text-center" style="text-decoration:none;">✅ Approve KYC</a>
+      <button onclick="document.getElementById('rj-modal').classList.toggle('hidden')" class="w-full py-3.5 text-sm font-semibold rounded-xl border transition-all" style="background:rgba(239,68,68,0.1);color:#EF4444;border-color:rgba(239,68,68,0.25);font-family:DM Sans,sans-serif;">🔴 Reject KYC</button>
+    </div>
+    {% endif %}
+  </div>
+  <!-- Documents -->
+  <div class="xl:col-span-2 space-y-6">
+    <div class="rounded-2xl p-5 card-dark">
+      <h4 class="font-display font-bold text-white text-lg mb-4">Government ID Document</h4>
+      {% if kyc.id_document %}
+      <div class="rounded-xl overflow-hidden" style="max-height:420px;"><img src="{{ kyc.id_document.url }}" alt="Government ID" class="w-full h-full object-contain" style="background:rgba(255,255,255,0.03);"/></div>
+      <a href="{{ kyc.id_document.url }}" target="_blank" class="inline-flex items-center gap-2 mt-3 text-sm" style="color:#2563EB;font-family:DM Sans,sans-serif;text-decoration:none;">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>Open Full Size
+      </a>
+      {% endif %}
+    </div>
+    <div class="rounded-2xl p-5 card-dark">
+      <h4 class="font-display font-bold text-white text-lg mb-4">Selfie with ID</h4>
+      {% if kyc.selfie %}
+      <div class="rounded-xl overflow-hidden" style="max-height:420px;"><img src="{{ kyc.selfie.url }}" alt="Selfie" class="w-full h-full object-contain" style="background:rgba(255,255,255,0.03);"/></div>
+      <a href="{{ kyc.selfie.url }}" target="_blank" class="inline-flex items-center gap-2 mt-3 text-sm" style="color:#2563EB;font-family:DM Sans,sans-serif;text-decoration:none;">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>Open Full Size
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<!-- Reject Modal -->
+<div id="rj-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.7);">
+  <div class="w-full max-w-md rounded-2xl p-6 card-dark">
+    <h3 class="font-display font-bold text-white text-xl mb-4">Reject KYC</h3>
+    <form method="post" action="{% url 'admin_kyc_reject' kyc.pk %}">
+      {% csrf_token %}
+      <textarea name="note" rows="4" class="input-dark resize-none mb-4" placeholder="Reason for rejection...">Documents were unclear or did not meet verification requirements.</textarea>
+      <div class="flex gap-3">
+        <button type="submit" class="flex-1 py-3 rounded-xl text-sm font-bold" style="background:rgba(239,68,68,0.15);color:#EF4444;border:1.5px solid rgba(239,68,68,0.3);font-family:DM Sans,sans-serif;">Confirm Rejection</button>
+        <button type="button" onclick="document.getElementById('rj-modal').classList.add('hidden')" class="flex-1 py-3 rounded-xl text-sm font-bold" style="background:rgba(255,255,255,0.06);color:#94A3B8;font-family:DM Sans,sans-serif;">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

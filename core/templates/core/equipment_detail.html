@@ -1,0 +1,44 @@
+{% extends 'core/base.html' %}
+{% block title %}{{ item.name }} — Hordstake{% endblock %}
+{% block body %}
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100" style="box-shadow:0 1px 4px rgba(10,31,68,0.06);">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+    <a href="/" class="flex items-center gap-2.5 font-display font-bold text-xl tracking-tight" style="color:#0A1F44;text-decoration:none;"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#0A1F44;"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>HORDSTAKE</a>
+    <div class="flex gap-3">
+      <a href="{% url 'equipment_list' %}" class="btn-outline px-4 py-2 text-sm">← Back</a>
+      {% if user.is_authenticated %}<a href="{% url 'rent_equipment' item.pk %}" class="btn-primary px-5 py-2 text-sm">Rent Now</a>{% else %}<a href="{% url 'login' %}" class="btn-primary px-5 py-2 text-sm">Login to Rent</a>{% endif %}
+    </div>
+  </div>
+</nav>
+<div class="pt-16 min-h-screen" style="background:#F3F4F6;">
+  <div class="max-w-6xl mx-auto px-4 sm:px-8 py-10">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+      <div>
+        <div class="rounded-2xl overflow-hidden mb-4" style="height:360px;background:linear-gradient(135deg,#EEF2FA,#D5DFF3);">
+          {% if item.image %}<img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-full h-full object-cover"/>
+          {% else %}<div class="w-full h-full flex flex-col items-center justify-center"><svg class="w-20 h-20 mb-3" style="color:#ABBFE7;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg><span class="text-sm" style="color:#7A9AD6;font-family:'DM Sans',sans-serif;">{{ item.get_category_display }}</span></div>{% endif %}
+        </div>
+      </div>
+      <div>
+        <div class="flex gap-2 mb-3"><span class="badge-blue px-3 py-1">{{ item.get_category_display }}</span>{% if item.featured %}<span class="badge-pending px-3 py-1">Featured</span>{% endif %}<span class="badge-success px-3 py-1">{{ item.get_status_display }}</span></div>
+        <h1 class="font-display text-3xl sm:text-4xl font-bold mb-4" style="color:#0F172A;">{{ item.name }}</h1>
+        <p class="text-gray-600 text-base leading-relaxed mb-6" style="font-family:'DM Sans',sans-serif;">{{ item.description }}</p>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          {% if item.capacity %}<div class="card p-4"><p class="text-xs text-gray-400 mb-1" style="font-family:'DM Sans',sans-serif;">Capacity</p><p class="font-semibold" style="color:#0F172A;font-family:'DM Sans',sans-serif;">{{ item.capacity }}</p></div>{% endif %}
+          {% if item.location %}<div class="card p-4"><p class="text-xs text-gray-400 mb-1" style="font-family:'DM Sans',sans-serif;">Location</p><p class="font-semibold" style="color:#0F172A;font-family:'DM Sans',sans-serif;">{{ item.location }}</p></div>{% endif %}
+        </div>
+        <div class="card p-6 mb-6">
+          <div class="flex items-center justify-between mb-2"><span class="font-display text-4xl font-bold" style="color:#0A1F44;">${{ item.daily_rate|floatformat:0 }}</span><span class="text-gray-400 text-sm" style="font-family:'DM Sans',sans-serif;">per day</span></div>
+          <p class="text-xs text-gray-400" style="font-family:'DM Sans',sans-serif;">Weekly: ~${{ item.daily_rate|floatformat:0 }} × 7 = ${{ item.daily_rate|floatformat:0 }} · Monthly available</p>
+        </div>
+        {% if user.is_authenticated %}
+        <a href="{% url 'rent_equipment' item.pk %}" class="btn-primary w-full py-4 text-base block text-center">Rent This Equipment</a>
+        {% else %}
+        <a href="{% url 'register' %}" class="btn-primary w-full py-4 text-base block text-center mb-3">Create Account to Rent</a>
+        <a href="{% url 'login' %}" class="btn-outline w-full py-4 text-sm block text-center">Sign In</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

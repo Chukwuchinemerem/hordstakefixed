@@ -1,0 +1,79 @@
+{% extends 'core/dashboard_base.html' %}
+{% block page_title %}Rent Equipment{% endblock %}
+{% block page_subtitle %}{{ item.name }}{% endblock %}
+{% block sidebar_nav %}
+<a href="{% url 'dashboard' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Overview</a>
+<a href="{% url 'my_rentals' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>My Rentals</a>
+<a href="{% url 'deposit' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>Deposit</a>
+<a href="{% url 'transactions' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Transactions</a>
+{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div class="rounded-2xl p-5 card-dark">
+      <p class="text-xs font-bold tracking-widest mb-3" style="color:#64748B;font-family:'DM Sans',sans-serif;">EQUIPMENT</p>
+      <h2 class="font-display font-bold text-white text-xl mb-2">{{ item.name }}</h2>
+      <span class="badge-blue">{{ item.get_category_display }}</span>
+      {% if item.location %}<p class="text-xs mt-3" style="color:#64748B;font-family:'DM Sans',sans-serif;">📍 {{ item.location }}</p>{% endif %}
+    </div>
+    <div class="rounded-2xl p-5" style="background:linear-gradient(135deg,#1E3A8A,#2563EB);">
+      <p class="text-blue-200 text-xs font-bold tracking-widest mb-2" style="font-family:'DM Sans',sans-serif;">YOUR BALANCE</p>
+      <div class="font-display text-3xl font-bold text-white mb-1">${{ profile.balance|floatformat:2 }}</div>
+      <p class="text-blue-200 text-sm" style="font-family:'DM Sans',sans-serif;">Daily Rate: <strong>${{ item.daily_rate|floatformat:2 }}</strong>/day</p>
+    </div>
+  </div>
+  <div class="rounded-2xl p-6 card-dark">
+    <h3 class="font-display font-bold text-white text-xl mb-6">Rental Details</h3>
+    <form method="post" class="space-y-5">
+      {% csrf_token %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-xs font-bold tracking-widest mb-2" style="color:#94A3B8;font-family:'DM Sans',sans-serif;">START DATE</label>
+          <input type="date" name="start_date" required id="start_date" class="input-dark"/>
+        </div>
+        <div>
+          <label class="block text-xs font-bold tracking-widest mb-2" style="color:#94A3B8;font-family:'DM Sans',sans-serif;">END DATE</label>
+          <input type="date" name="end_date" required id="end_date" class="input-dark"/>
+        </div>
+      </div>
+      <div id="cost-preview" class="hidden rounded-xl p-4" style="background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.2);">
+        <div class="flex items-center justify-between">
+          <span class="text-sm" style="color:#93C5FD;font-family:'DM Sans',sans-serif;">Estimated Total Cost</span>
+          <span class="font-display font-bold text-white text-2xl" id="cost-amount">$0</span>
+        </div>
+        <p class="text-xs mt-1" style="color:#64748B;font-family:'DM Sans',sans-serif;"><span id="cost-days">0</span> days × ${{ item.daily_rate|floatformat:2 }}/day</p>
+      </div>
+      <div>
+        <label class="block text-xs font-bold tracking-widest mb-2" style="color:#94A3B8;font-family:'DM Sans',sans-serif;">SPECIAL NOTES (OPTIONAL)</label>
+        <textarea name="notes" rows="3" placeholder="Any special requirements or delivery instructions..." class="input-dark" style="resize:none;"></textarea>
+      </div>
+      <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.04);">
+        <p class="text-xs" style="color:#94A3B8;font-family:'DM Sans',sans-serif;">💡 Payment will be deducted from your balance immediately upon confirmation. Ensure sufficient balance before renting.</p>
+      </div>
+      <button type="submit" class="btn-blue w-full py-4 text-sm">Confirm Rental</button>
+    </form>
+  </div>
+</div>
+<script>
+const rate = {{ item.daily_rate }};
+function calcCost() {
+  const s = document.getElementById('start_date').value;
+  const e = document.getElementById('end_date').value;
+  if (s && e) {
+    const days = Math.ceil((new Date(e) - new Date(s)) / 86400000);
+    if (days > 0) {
+      const total = (days * rate).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+      document.getElementById('cost-amount').textContent = '$' + total;
+      document.getElementById('cost-days').textContent = days;
+      document.getElementById('cost-preview').classList.remove('hidden');
+    }
+  }
+}
+document.getElementById('start_date').addEventListener('change', calcCost);
+document.getElementById('end_date').addEventListener('change', calcCost);
+// Set min date to today
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('start_date').min = today;
+document.getElementById('end_date').min = today;
+</script>
+{% endblock %}

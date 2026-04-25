@@ -1,0 +1,46 @@
+{% extends 'core/admin/admin_base.html' %}
+{% block page_title %}Transactions{% endblock %}
+{% block page_subtitle %}All platform transactions — confirm or reject deposits{% endblock %}
+{% block a_txns %}active{% endblock %}
+{% block content %}
+<div class="rounded-2xl p-6 card-dark">
+  <div class="flex items-center justify-between mb-6"><h3 class="font-display font-bold text-white text-xl">All Transactions</h3><span class="badge-blue">{{ transactions.count }}</span></div>
+  <div class="overflow-x-auto">
+    <table class="w-full" style="min-width:800px;">
+      <thead><tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">User</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Type</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Amount</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Crypto</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">TX Hash</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Status</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Date</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Action</th>
+      </tr></thead>
+      <tbody>
+        {% for txn in transactions %}
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+          <td class="py-3 pr-3 text-sm font-semibold text-white" style="font-family:'DM Sans',sans-serif;">{{ txn.user.username }}</td>
+          <td class="py-3 pr-3"><span class="{% if txn.transaction_type == 'deposit' %}badge-success{% elif txn.transaction_type == 'rental' %}badge-blue{% else %}badge-pending{% endif %}">{{ txn.transaction_type|title }}</span></td>
+          <td class="py-3 pr-3 font-display font-bold text-white">${{ txn.amount|floatformat:2 }}</td>
+          <td class="py-3 pr-3 text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ txn.crypto_type|default:"—" }}</td>
+          <td class="py-3 pr-3 text-xs" style="color:#64748B;font-family:monospace;max-width:120px;"><span class="truncate block">{{ txn.tx_hash|default:"—"|truncatechars:16 }}</span></td>
+          <td class="py-3 pr-3"><span class="{% if txn.status == 'confirmed' %}badge-success{% elif txn.status == 'pending' %}badge-pending{% else %}badge-error{% endif %}">{{ txn.status|title }}</span></td>
+          <td class="py-3 pr-3 text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ txn.created_at|date:"M d, Y" }}</td>
+          <td class="py-3">
+            {% if txn.transaction_type == 'deposit' and txn.status == 'pending' %}
+            <div class="flex gap-2">
+              <a href="{% url 'admin_confirm_deposit' txn.pk %}" class="btn-blue px-3 py-1.5 text-xs" onclick="return confirm('Confirm deposit of ${{ txn.amount }}?')">Confirm</a>
+              <a href="{% url 'admin_reject_deposit' txn.pk %}" class="px-3 py-1.5 text-xs rounded-lg font-semibold transition-all" style="background:rgba(239,68,68,0.12);color:#FCA5A5;font-family:'DM Sans',sans-serif;" onclick="return confirm('Reject this deposit?')">Reject</a>
+            </div>
+            {% else %}<span class="text-xs" style="color:#334155;font-family:'DM Sans',sans-serif;">—</span>{% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" class="py-10 text-center text-sm" style="color:#64748B;font-family:'DM Sans',sans-serif;">No transactions yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'core/base.html' %}
+{% block title %}Sign In — Hordstake{% endblock %}
+{% block body_class %}text-white{% endblock %}
+{% block body %}
+<div class="min-h-screen flex" style="background:#0F172A;">
+  <!-- Left Panel -->
+  <div class="hidden lg:flex lg:w-1/2 flex-col justify-between p-12" style="background:linear-gradient(135deg,#0A1F44 0%,#1E3A8A 100%);">
+    <a href="/" class="flex items-center gap-2.5 font-display font-bold text-xl tracking-tight text-white" style="text-decoration:none;">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#2563EB;"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+      HORDSTAKE
+    </a>
+    <div>
+      <h2 class="font-display text-4xl font-bold text-white mb-4 leading-tight">Premium Oil & Gas<br>Equipment Rental</h2>
+      <p class="text-blue-200 text-base leading-relaxed mb-8" style="font-family:'DM Sans',sans-serif;">Access world-class industrial equipment, manage rentals, and invest in global oil and gas operations — all from one secure platform.</p>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.07);"><div class="font-display text-2xl font-bold text-white mb-1">500+</div><div class="text-xs text-blue-300" style="font-family:'DM Sans',sans-serif;">Companies</div></div>
+        <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.07);"><div class="font-display text-2xl font-bold text-white mb-1">50+</div><div class="text-xs text-blue-300" style="font-family:'DM Sans',sans-serif;">Countries</div></div>
+        <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.07);"><div class="font-display text-2xl font-bold text-white mb-1">24/7</div><div class="text-xs text-blue-300" style="font-family:'DM Sans',sans-serif;">Support</div></div>
+      </div>
+    </div>
+    <p class="text-blue-400 text-xs" style="font-family:'DM Sans',sans-serif;">© 2025 Hordstake Energy Solutions. ISO Certified.</p>
+  </div>
+  <!-- Right Panel -->
+  <div class="flex-1 flex items-center justify-center p-6 sm:p-12" style="background:#0F172A;">
+    <div class="w-full max-w-md">
+      <!-- Mobile Logo -->
+      <a href="/" class="lg:hidden flex items-center gap-2.5 font-display font-bold text-xl tracking-tight text-white mb-10" style="text-decoration:none;">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#2563EB;"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+        HORDSTAKE
+      </a>
+      <h1 class="font-display text-3xl font-bold text-white mb-2">Welcome back</h1>
+      <p class="text-sm mb-8" style="color:#64748B;font-family:'DM Sans',sans-serif;">Sign in to your Hordstake account</p>
+
+      {% if messages %}
+      <div class="mb-5 space-y-2">{% for m in messages %}<div class="px-4 py-3 rounded-xl text-sm" style="background:rgba(239,68,68,0.1);color:#FCA5A5;border:1px solid rgba(239,68,68,0.2);font-family:'DM Sans',sans-serif;">{{ m }}</div>{% endfor %}</div>
+      {% endif %}
+
+      <form method="post" class="space-y-5">
+        {% csrf_token %}
+        <div>
+          <label class="block text-xs font-bold tracking-widest mb-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">USERNAME</label>
+          <input type="text" name="username" required autofocus autocomplete="username" class="input-dark" placeholder="Enter your username"/>
+        </div>
+        <div>
+          <label class="block text-xs font-bold tracking-widest mb-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">PASSWORD</label>
+          <input type="password" name="password" required autocomplete="current-password" class="input-dark" placeholder="Enter your password"/>
+        </div>
+        <button type="submit" class="btn-blue w-full py-4 text-sm mt-2">Sign In to Dashboard</button>
+      </form>
+      <p class="text-center mt-6 text-sm" style="color:#64748B;font-family:'DM Sans',sans-serif;">Don't have an account? <a href="{% url 'register' %}" class="font-semibold hover:text-white transition-colors" style="color:#2563EB;text-decoration:none;">Create Account</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

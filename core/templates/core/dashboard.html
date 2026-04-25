@@ -1,0 +1,220 @@
+{% extends 'core/dashboard_base.html' %}
+{% block page_title %}Overview{% endblock %}
+{% block page_subtitle %}Welcome back, {{ request.user.username }}{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'dashboard' %}" class="sidebar-link active">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Overview
+</a>
+<a href="{% url 'my_rentals' %}" class="sidebar-link">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>My Rentals
+</a>
+<a href="{% url 'sell_equipment' %}" class="sidebar-link">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>Sell Equipment
+</a>
+<a href="/equipment/?type=invest" class="sidebar-link">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>Investments
+</a>
+<a href="{% url 'deposit' %}" class="sidebar-link">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>Deposit
+</a>
+<a href="{% url 'withdraw' %}" class="sidebar-link">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Withdraw
+</a>
+<a href="{% url 'transactions' %}" class="sidebar-link">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Transactions
+</a>
+<a href="{% url 'kyc_submit' %}" class="sidebar-link">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+  KYC
+  {% if kyc %}
+    {% if kyc.status == 'approved' %}<span class="ml-auto badge-success text-xs">✅</span>
+    {% elif kyc.status == 'pending' %}<span class="ml-auto badge-pending text-xs">🟡</span>
+    {% else %}<span class="ml-auto badge-error text-xs">🔴</span>{% endif %}
+  {% endif %}
+</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- KYC Warning Banner -->
+{% if not kyc or kyc.status != 'approved' %}
+<div class="rounded-2xl p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between" style="background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.25);">
+  <div class="flex items-start gap-3">
+    <svg class="w-5 h-5 flex-shrink-0 mt-0.5" style="color:#EAB308;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+    <div>
+      <p class="text-white text-sm font-semibold" style="font-family:'DM Sans',sans-serif;">
+        {% if not kyc %}Complete KYC to unlock full platform access
+        {% elif kyc.status == 'pending' %}🟡 KYC Under Review — usually within 24 hours
+        {% else %}🔴 KYC Rejected — please resubmit your documents{% endif %}
+      </p>
+      <p class="text-xs" style="color:#FDE68A;font-family:'DM Sans',sans-serif;">Higher deposit limits, investment tiers, and withdrawals require verified identity.</p>
+    </div>
+  </div>
+  <a href="{% url 'kyc_submit' %}" class="flex-shrink-0 text-xs font-bold px-4 py-2 rounded-lg transition-all" style="background:rgba(234,179,8,0.15);color:#FDE68A;border:1px solid rgba(234,179,8,0.3);font-family:'DM Sans',sans-serif;text-decoration:none;white-space:nowrap;">
+    {% if not kyc %}Start KYC{% elif kyc.status == 'pending' %}View Status{% else %}Resubmit{% endif %}
+  </a>
+</div>
+{% endif %}
+
+<!-- STAT CARDS -->
+<div class="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+  <div class="rounded-2xl p-5" style="background:linear-gradient(135deg,#1E3A8A 0%,#2563EB 100%);">
+    <p class="text-blue-200 text-xs font-bold tracking-widest mb-2" style="font-family:'DM Sans',sans-serif;">BALANCE</p>
+    <div class="font-display text-2xl sm:text-3xl font-bold text-white">${{ profile.balance|floatformat:2 }}</div>
+    <a href="{% url 'deposit' %}" class="text-xs text-blue-200 hover:text-white mt-2 inline-block" style="font-family:'DM Sans',sans-serif;">+ Add Funds</a>
+  </div>
+  <div class="rounded-2xl p-5 card-dark">
+    <p class="text-xs font-bold tracking-widest mb-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">ACTIVE RENTALS</p>
+    <div class="font-display text-2xl sm:text-3xl font-bold text-white">{{ active_rentals }}</div>
+    <p class="text-xs mt-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">Running now</p>
+  </div>
+  <div class="rounded-2xl p-5 card-dark">
+    <p class="text-xs font-bold tracking-widest mb-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">TOTAL SPENT</p>
+    <div class="font-display text-2xl sm:text-3xl font-bold text-white">${{ total_spent|floatformat:0 }}</div>
+    <p class="text-xs mt-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">On rentals</p>
+  </div>
+  <div class="rounded-2xl p-5 card-dark">
+    <p class="text-xs font-bold tracking-widest mb-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">REFERRAL BONUS</p>
+    <div class="font-display text-2xl sm:text-3xl font-bold text-white">${{ profile.referral_bonus|floatformat:2 }}</div>
+    <p class="text-xs mt-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ profile.referral_count }} referral{{ profile.referral_count|pluralize }}</p>
+  </div>
+</div>
+
+<!-- QUICK ACTIONS + RECENT TRANSACTIONS -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-5 mb-5">
+  <!-- Quick Actions -->
+  <div class="rounded-2xl p-5 card-dark">
+    <h3 class="font-display font-bold text-white text-lg mb-4">Quick Actions</h3>
+    <div class="space-y-2">
+      {% for action in quick_actions %}
+      <a href="{{ action.url }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all group" style="text-decoration:none;">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:{{ action.bg }};">
+          <svg class="w-4 h-4" style="color:{{ action.color }};" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ action.icon }}"/></svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-white text-sm font-semibold truncate" style="font-family:'DM Sans',sans-serif;">{{ action.title }}</p>
+          <p class="text-xs truncate" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ action.sub }}</p>
+        </div>
+        <svg class="w-4 h-4 flex-shrink-0 group-hover:translate-x-1 transition-transform" style="color:#334155;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Recent Transactions -->
+  <div class="xl:col-span-2 rounded-2xl p-5 card-dark">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-display font-bold text-white text-lg">Recent Transactions</h3>
+      <a href="{% url 'transactions' %}" class="text-xs font-medium hover:text-white transition-colors" style="color:#2563EB;font-family:'DM Sans',sans-serif;text-decoration:none;">View all</a>
+    </div>
+    {% if transactions %}
+    <div class="space-y-2">
+      {% for txn in transactions %}
+      <div class="flex items-center justify-between p-3 rounded-xl" style="background:rgba(255,255,255,0.04);">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style="background:{% if txn.transaction_type == 'deposit' %}rgba(34,197,94,0.12){% elif txn.transaction_type == 'rental' %}rgba(37,99,235,0.12){% else %}rgba(234,179,8,0.12){% endif %};">
+            <svg class="w-4 h-4" style="color:{% if txn.transaction_type == 'deposit' %}#22C55E{% elif txn.transaction_type == 'rental' %}#3B82F6{% else %}#EAB308{% endif %};" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div class="min-w-0">
+            <p class="text-white text-sm font-semibold capitalize truncate" style="font-family:'DM Sans',sans-serif;">{{ txn.transaction_type|title }}</p>
+            <p class="text-xs truncate" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ txn.created_at|date:"M d, Y" }}</p>
+          </div>
+        </div>
+        <div class="text-right flex-shrink-0 ml-3">
+          <p class="text-white text-sm font-bold font-display">${{ txn.amount|floatformat:2 }}</p>
+          <span class="{% if txn.status == 'confirmed' %}badge-success{% elif txn.status == 'pending' %}badge-pending{% else %}badge-error{% endif %}">{{ txn.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-10">
+      <p class="text-sm mb-4" style="color:#64748B;font-family:'DM Sans',sans-serif;">No transactions yet</p>
+      <a href="{% url 'deposit' %}" class="btn-blue px-5 py-2.5 text-sm">Make First Deposit</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- RECENT RENTALS -->
+<div class="rounded-2xl p-5 card-dark">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="font-display font-bold text-white text-lg">Recent Rentals</h3>
+    <a href="{% url 'my_rentals' %}" class="text-xs font-medium hover:text-white transition-colors" style="color:#2563EB;font-family:'DM Sans',sans-serif;text-decoration:none;">View all</a>
+  </div>
+  {% if rentals %}
+  <div class="overflow-x-auto">
+    <table class="w-full" style="min-width:480px;">
+      <thead>
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+          <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:'DM Sans',sans-serif;">Equipment</th>
+          <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:'DM Sans',sans-serif;">Period</th>
+          <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:'DM Sans',sans-serif;">Cost</th>
+          <th class="text-left pb-3 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:'DM Sans',sans-serif;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in rentals %}
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+          <td class="py-3 pr-4">
+            <p class="text-white text-sm font-semibold truncate" style="font-family:'DM Sans',sans-serif;max-width:180px;">{{ r.equipment.name }}</p>
+            <p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ r.duration_days }} days</p>
+          </td>
+          <td class="py-3 pr-4 text-xs" style="color:#94A3B8;font-family:'DM Sans',sans-serif;white-space:nowrap;">{{ r.start_date|date:"M d" }} — {{ r.end_date|date:"M d, Y" }}</td>
+          <td class="py-3 pr-4"><span class="text-white font-bold font-display">${{ r.total_cost|floatformat:2 }}</span></td>
+          <td class="py-3"><span class="{% if r.status == 'active' %}badge-success{% elif r.status == 'pending' %}badge-pending{% elif r.status == 'completed' %}badge-blue{% else %}badge-error{% endif %}">{{ r.status|title }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="text-center py-10">
+    <p class="text-sm mb-4" style="color:#64748B;font-family:'DM Sans',sans-serif;">No rentals yet</p>
+    <a href="{% url 'equipment_list' %}" class="btn-blue px-5 py-2.5 text-sm">Browse Equipment</a>
+  </div>
+  {% endif %}
+</div>
+
+<!-- CONFIRMED DEPOSIT POPUP (view-once) -->
+{% if popup_txn %}
+<div id="confirm-popup" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.7);">
+  <div class="w-full max-w-sm rounded-2xl overflow-hidden animate-pop-up" style="box-shadow:0 32px 80px rgba(0,0,0,0.5);">
+    <div class="px-8 py-8 text-center" style="background:linear-gradient(135deg,#064E3B,#065F46);">
+      <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style="background:rgba(34,197,94,0.2);border:2px solid rgba(34,197,94,0.4);">
+        <svg class="w-8 h-8" style="color:#22C55E;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <h3 class="font-display font-bold text-white text-xl mb-1">Payment Confirmed!</h3>
+      <p class="text-green-200 text-sm" style="font-family:'DM Sans',sans-serif;">Your crypto deposit has been confirmed</p>
+    </div>
+    <div class="px-8 py-6" style="background:#1E293B;">
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <div class="rounded-xl p-3 text-center" style="background:rgba(255,255,255,0.05);">
+          <p class="text-xs mb-1" style="color:#64748B;font-family:'DM Sans',sans-serif;">Amount</p>
+          <p class="font-display font-bold text-white">${{ popup_txn.amount|floatformat:2 }}</p>
+        </div>
+        <div class="rounded-xl p-3 text-center" style="background:rgba(255,255,255,0.05);">
+          <p class="text-xs mb-1" style="color:#64748B;font-family:'DM Sans',sans-serif;">Method</p>
+          <p class="font-display font-bold text-white">{{ popup_txn.crypto_type|default:"Crypto" }}</p>
+        </div>
+      </div>
+      <div class="rounded-xl p-2.5 mb-4 text-center" style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);">
+        <p class="text-xs" style="color:#86EFAC;font-family:'DM Sans',sans-serif;">Ref: HSK-{{ popup_txn.reference|stringformat:'s'|slice:':8'|upper }}</p>
+      </div>
+      <div class="flex gap-3">
+        <a href="{% url 'view_receipt' popup_txn.pk %}" class="flex-1 btn-blue py-3 text-sm text-center" style="text-decoration:none;">View Receipt</a>
+        <button onclick="document.getElementById('confirm-popup').style.opacity='0';setTimeout(()=>document.getElementById('confirm-popup').remove(),300)" class="flex-1 py-3 text-sm font-semibold rounded-xl transition-all" style="background:rgba(255,255,255,0.06);color:#94A3B8;font-family:'DM Sans',sans-serif;">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+document.getElementById('confirm-popup').style.transition='opacity 0.3s ease';
+setTimeout(()=>{
+  const p=document.getElementById('confirm-popup');
+  if(p){p.style.opacity='0';setTimeout(()=>p.remove(),300);}
+},15000);
+</script>
+{% endif %}
+{% endblock %}

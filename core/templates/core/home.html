@@ -1,0 +1,597 @@
+{% extends 'core/base.html' %}
+{% block title %}Hordstake — Global Oil & Gas Equipment Rental Platform{% endblock %}
+{% block body %}
+
+<!-- ═══════════════════════════════════════════════════════════════
+     NAVBAR
+════════════════════════════════════════════════════════════════ -->
+<nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 transition-all" style="box-shadow:0 1px 4px rgba(10,31,68,0.06);">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2.5 font-display font-bold text-xl tracking-tight" style="color:#0A1F44;text-decoration:none;">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#0A1F44;">
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        HORDSTAKE
+      </a>
+      <!-- Desktop Links -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="{% url 'equipment_list' %}" class="text-sm font-medium text-gray-600 hover:text-navy transition-colors" style="font-family:'DM Sans',sans-serif;">Equipment</a>
+        <a href="{% url 'equipment_list' %}?type=invest" class="text-sm font-medium text-gray-600 hover:text-navy transition-colors" style="font-family:'DM Sans',sans-serif;">Investments</a>
+        <a href="#services" class="text-sm font-medium text-gray-600 hover:text-navy transition-colors" style="font-family:'DM Sans',sans-serif;">Services</a>
+        <a href="#about" class="text-sm font-medium text-gray-600 hover:text-navy transition-colors" style="font-family:'DM Sans',sans-serif;">About</a>
+        <!-- Lang -->
+        <div class="relative" id="lang-wrap">
+          <button onclick="document.getElementById('lang-dd').classList.toggle('hidden')" class="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-navy transition-colors" style="font-family:'DM Sans',sans-serif;">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+            <span id="lang-cur">EN</span><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div id="lang-dd" class="hidden absolute right-0 top-9 bg-white border border-gray-100 rounded-xl shadow-lg py-2 w-40 z-50 animate-fade-down">
+            {% for l in languages %}
+            <button onclick="setLang('{{ l }}')" class="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-navy" style="font-family:'DM Sans',sans-serif;">{{ l }}</button>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <!-- Auth Buttons -->
+      <div class="hidden md:flex items-center gap-3">
+        {% if user.is_authenticated %}
+        <a href="{% if user.is_staff %}{% url 'admin_dashboard' %}{% else %}{% url 'dashboard' %}{% endif %}" class="btn-primary px-5 py-2.5 text-sm">My Dashboard</a>
+        {% else %}
+        <a href="{% url 'login' %}" class="btn-outline px-5 py-2.5 text-sm">Sign In</a>
+        <a href="{% url 'register' %}" class="btn-primary px-5 py-2.5 text-sm">Get Started</a>
+        {% endif %}
+      </div>
+      <!-- Mobile Hamburger -->
+      <button onclick="document.getElementById('mob-menu').classList.toggle('hidden')" class="md:hidden p-2 rounded-lg hover:bg-gray-50">
+        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <!-- Mobile Menu -->
+  <div id="mob-menu" class="hidden md:hidden border-t border-gray-100 bg-white px-4 pb-4 pt-3 space-y-2">
+    <a href="{% url 'equipment_list' %}" class="block py-2.5 text-sm font-medium text-gray-700" style="font-family:'DM Sans',sans-serif;">Equipment</a>
+    <a href="{% url 'equipment_list' %}?type=invest" class="block py-2.5 text-sm font-medium text-gray-700" style="font-family:'DM Sans',sans-serif;">Investments</a>
+    <a href="#services" class="block py-2.5 text-sm font-medium text-gray-700" style="font-family:'DM Sans',sans-serif;">Services</a>
+    <a href="#about" class="block py-2.5 text-sm font-medium text-gray-700" style="font-family:'DM Sans',sans-serif;">About</a>
+    <div class="flex gap-3 pt-3">
+      {% if user.is_authenticated %}
+      <a href="{% url 'dashboard' %}" class="flex-1 btn-primary py-2.5 text-sm text-center">Dashboard</a>
+      {% else %}
+      <a href="{% url 'login' %}" class="flex-1 btn-outline py-2.5 text-sm text-center">Sign In</a>
+      <a href="{% url 'register' %}" class="flex-1 btn-primary py-2.5 text-sm text-center">Get Started</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HERO CAROUSEL — Full-Screen, 8 Equipment Slides
+════════════════════════════════════════════════════════════════ -->
+<section id="hero" class="relative h-screen min-h-[640px] overflow-hidden mt-16">
+  <!-- Slides Container -->
+  <div id="carousel-track" class="flex h-full" style="width:800%;transition:transform 0.75s cubic-bezier(0.77,0,0.175,1);">
+
+    <!-- SLIDE 1: Offshore Jack-Up Rig -->
+    <div class="relative flex-shrink-0 h-full" style="width:12.5%;">
+      <div class="absolute inset-0" style="background:url('https://images.unsplash.com/photo-1581091870627-3d8b3a1b9f74?w=1920&q=80') center/cover no-repeat;"></div>
+      <div class="absolute inset-0" style="background:linear-gradient(100deg,rgba(10,31,68,0.92) 0%,rgba(10,31,68,0.5) 60%,transparent 100%);"></div>
+      <div class="relative z-10 h-full flex items-center px-6 sm:px-16 lg:px-24">
+        <div class="max-w-2xl animate-fade-up">
+          <span class="section-label mb-4 block text-blue-400">Offshore Operations</span>
+          <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl text-white font-bold leading-tight mb-5">Offshore Jack-Up<br>Drilling Rig</h1>
+          <p class="text-gray-300 text-base sm:text-lg mb-8 max-w-lg" style="font-family:'DM Sans',sans-serif;">Self-elevating platform for shallow water operations up to 300ft depth. Full crew accommodation included.</p>
+          <div class="flex items-center gap-4 mb-8">
+            <div class="text-white"><span class="font-display text-4xl font-bold">$95,000</span><span class="text-gray-400 text-sm ml-1" style="font-family:'DM Sans',sans-serif;">/day</span></div>
+            <div class="w-px h-10 bg-white/20"></div>
+            <span class="badge-blue text-xs px-3 py-1" style="font-size:0.75rem;">Available Now</span>
+          </div>
+          <div class="flex gap-4">
+            <a href="{% url 'equipment_list' %}" class="btn-blue px-7 py-3.5 text-sm">Rent This Equipment</a>
+            <a href="{% url 'equipment_list' %}" class="btn-outline px-7 py-3.5 text-sm bg-white/10 border-white/30 text-white hover:bg-white hover:text-navy">View All Fleet</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: Crude Oil Tanker -->
+    <div class="relative flex-shrink-0 h-full" style="width:12.5%;">
+      <div class="absolute inset-0" style="background:url('https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=1920&q=80') center/cover no-repeat;"></div>
+      <div class="absolute inset-0" style="background:linear-gradient(100deg,rgba(10,31,68,0.9) 0%,rgba(10,31,68,0.45) 60%,transparent 100%);"></div>
+      <div class="relative z-10 h-full flex items-center px-6 sm:px-16 lg:px-24">
+        <div class="max-w-2xl">
+          <span class="section-label mb-4 block text-blue-400">Marine Fleet</span>
+          <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl text-white font-bold leading-tight mb-5">Crude Oil Tanker<br>50,000 BBL</h1>
+          <p class="text-gray-300 text-base sm:text-lg mb-8 max-w-lg" style="font-family:'DM Sans',sans-serif;">Heavy-duty crude oil tanker with advanced GPS tracking and international maritime certification.</p>
+          <div class="flex items-center gap-4 mb-8">
+            <div class="text-white"><span class="font-display text-4xl font-bold">$4,500</span><span class="text-gray-400 text-sm ml-1" style="font-family:'DM Sans',sans-serif;">/day</span></div>
+          </div>
+          <a href="{% url 'equipment_list' %}" class="btn-blue px-7 py-3.5 text-sm">Rent Equipment</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Underground Storage Tank -->
+    <div class="relative flex-shrink-0 h-full" style="width:12.5%;">
+      <div class="absolute inset-0" style="background:url('https://images.pexels.com/photos/257700/pexels-photo-257700.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover no-repeat;"></div>
+      <div class="absolute inset-0" style="background:linear-gradient(100deg,rgba(6,13,30,0.93) 0%,rgba(6,13,30,0.5) 60%,transparent 100%);"></div>
+      <div class="relative z-10 h-full flex items-center px-6 sm:px-16 lg:px-24">
+        <div class="max-w-2xl">
+          <span class="section-label mb-4 block text-blue-400">Storage Solutions</span>
+          <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl text-white font-bold leading-tight mb-5">Underground<br>Safe Tank System</h1>
+          <p class="text-gray-300 text-base sm:text-lg mb-8 max-w-lg" style="font-family:'DM Sans',sans-serif;">Double-wall fiberglass underground storage tanks with leak detection and cathodic protection.</p>
+          <div class="flex items-center gap-4 mb-8">
+            <div class="text-white"><span class="font-display text-4xl font-bold">$3,200</span><span class="text-gray-400 text-sm ml-1" style="font-family:'DM Sans',sans-serif;">/day</span></div>
+          </div>
+          <a href="{% url 'equipment_list' %}" class="btn-blue px-7 py-3.5 text-sm">Rent Equipment</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Oil Tanker Trailer -->
+    <div class="relative flex-shrink-0 h-full" style="width:12.5%;">
+      <div class="absolute inset-0" style="background:url('https://images.pexels.com/photos/1117210/pexels-photo-1117210.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover no-repeat;"></div>
+      <div class="absolute inset-0" style="background:linear-gradient(100deg,rgba(10,31,68,0.91) 0%,rgba(10,31,68,0.48) 60%,transparent 100%);"></div>
+      <div class="relative z-10 h-full flex items-center px-6 sm:px-16 lg:px-24">
+        <div class="max-w-2xl">
+          <span class="section-label mb-4 block text-blue-400">Road Transport</span>
+          <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl text-white font-bold leading-tight mb-5">Oil Tanker<br>& Trailers</h1>
+          <p class="text-gray-300 text-base sm:text-lg mb-8 max-w-lg" style="font-family:'DM Sans',sans-serif;">Heavy-duty tanker trailers certified for petroleum and hazardous material transport across all terrains.</p>
+          <div class="flex items-center gap-4 mb-8">
+            <div class="text-white"><span class="font-display text-4xl font-bold">$1,200</span><span class="text-gray-400 text-sm ml-1" style="font-family:'DM Sans',sans-serif;">/day</span></div>
+          </div>
+          <a href="{% url 'equipment_list' %}" class="btn-blue px-7 py-3.5 text-sm">Rent Equipment</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: Drilling Platform -->
+    <div class="relative flex-shrink-0 h-full" style="width:12.5%;">
+      <div class="absolute inset-0" style="background:url('https://images.pexels.com/photos/39553/oil-rig-drilling-platform-oil-39553.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover no-repeat;"></div>
+      <div class="absolute inset-0" style="background:linear-gradient(100deg,rgba(10,31,68,0.92) 0%,rgba(10,31,68,0.5) 60%,transparent 100%);"></div>
+      <div class="relative z-10 h-full flex items-center px-6 sm:px-16 lg:px-24">
+        <div class="max-w-2xl">
+          <span class="section-label mb-4 block text-blue-400">Extraction</span>
+          <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl text-white font-bold leading-tight mb-5">Onshore Drilling<br>Platform</h1>
+          <p class="text-gray-300 text-base sm:text-lg mb-8 max-w-lg" style="font-family:'DM Sans',sans-serif;">Advanced onshore drilling rigs with automated pipe handling and real-time monitoring systems.</p>
+          <div class="flex items-center gap-4 mb-8">
+            <div class="text-white"><span class="font-display text-4xl font-bold">$65,000</span><span class="text-gray-400 text-sm ml-1" style="font-family:'DM Sans',sans-serif;">/day</span></div>
+          </div>
+          <a href="{% url 'equipment_list' %}" class="btn-blue px-7 py-3.5 text-sm">Rent Equipment</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: LNG Tanker -->
+    <div class="relative flex-shrink-0 h-full" style="width:12.5%;">
+      <div class="absolute inset-0" style="background:url('https://images.pexels.com/photos/373965/pexels-photo-373965.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover no-repeat;"></div>
+      <div class="absolute inset-0" style="background:linear-gradient(100deg,rgba(6,13,30,0.92) 0%,rgba(6,13,30,0.5) 60%,transparent 100%);"></div>
+      <div class="relative z-10 h-full flex items-center px-6 sm:px-16 lg:px-24">
+        <div class="max-w-2xl">
+          <span class="section-label mb-4 block text-blue-400">LNG Operations</span>
+          <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl text-white font-bold leading-tight mb-5">LNG Cryogenic<br>Tanker Vessel</h1>
+          <p class="text-gray-300 text-base sm:text-lg mb-8 max-w-lg" style="font-family:'DM Sans',sans-serif;">Specialized liquefied natural gas transport vessel operating at -162°C with advanced safety systems.</p>
+          <div class="flex items-center gap-4 mb-8">
+            <div class="text-white"><span class="font-display text-4xl font-bold">$12,000</span><span class="text-gray-400 text-sm ml-1" style="font-family:'DM Sans',sans-serif;">/day</span></div>
+          </div>
+          <a href="{% url 'equipment_list' %}" class="btn-blue px-7 py-3.5 text-sm">Rent Equipment</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: Transport Trucks -->
+    <div class="relative flex-shrink-0 h-full" style="width:12.5%;">
+      <div class="absolute inset-0" style="background:url('https://images.pexels.com/photos/2199293/pexels-photo-2199293.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover no-repeat;"></div>
+      <div class="absolute inset-0" style="background:linear-gradient(100deg,rgba(10,31,68,0.91) 0%,rgba(10,31,68,0.48) 60%,transparent 100%);"></div>
+      <div class="relative z-10 h-full flex items-center px-6 sm:px-16 lg:px-24">
+        <div class="max-w-2xl">
+          <span class="section-label mb-4 block text-blue-400">Fleet Transport</span>
+          <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl text-white font-bold leading-tight mb-5">Industrial Oil<br>Transport Trucks</h1>
+          <p class="text-gray-300 text-base sm:text-lg mb-8 max-w-lg" style="font-family:'DM Sans',sans-serif;">10,000 gallon capacity petroleum transport trucks with GPS monitoring and hazmat certification.</p>
+          <div class="flex items-center gap-4 mb-8">
+            <div class="text-white"><span class="font-display text-4xl font-bold">$850</span><span class="text-gray-400 text-sm ml-1" style="font-family:'DM Sans',sans-serif;">/day</span></div>
+          </div>
+          <a href="{% url 'equipment_list' %}" class="btn-blue px-7 py-3.5 text-sm">Rent Equipment</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: Investment Opportunity -->
+    <div class="relative flex-shrink-0 h-full" style="width:12.5%;">
+      <div class="absolute inset-0" style="background:url('https://images.unsplash.com/photo-1612965607446-25e1332775ae?w=1920&q=80') center/cover no-repeat;"></div>
+      <div class="absolute inset-0" style="background:linear-gradient(100deg,rgba(37,99,235,0.88) 0%,rgba(10,31,68,0.7) 60%,rgba(10,31,68,0.4) 100%);"></div>
+      <div class="relative z-10 h-full flex items-center px-6 sm:px-16 lg:px-24">
+        <div class="max-w-2xl">
+          <span class="section-label mb-4 block text-blue-300">Investment Program</span>
+          <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl text-white font-bold leading-tight mb-5">Invest in Oil<br>& Gas Markets</h1>
+          <p class="text-gray-200 text-base sm:text-lg mb-8 max-w-lg" style="font-family:'DM Sans',sans-serif;">Earn 8–24% annual returns by investing in our premium oil and gas operations and equipment portfolios.</p>
+          <div class="flex items-center gap-6 mb-8">
+            <div class="text-white text-center"><div class="font-display text-3xl font-bold">24%</div><div class="text-xs text-gray-300 mt-1" style="font-family:'DM Sans',sans-serif;">Max Annual ROI</div></div>
+            <div class="w-px h-12 bg-white/20"></div>
+            <div class="text-white text-center"><div class="font-display text-3xl font-bold">$500</div><div class="text-xs text-gray-300 mt-1" style="font-family:'DM Sans',sans-serif;">Min Investment</div></div>
+          </div>
+          <a href="{% url 'register' %}" class="btn-blue px-7 py-3.5 text-sm">Start Investing</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /carousel-track -->
+
+  <!-- Navigation Arrows -->
+  <button id="prev-btn" onclick="_carouselPrev()" class="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full flex items-center justify-center text-white border border-white/25 hover:bg-white/15 transition-all" style="background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+  </button>
+  <button id="next-btn" onclick="_carouselNext()" class="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full flex items-center justify-center text-white border border-white/25 hover:bg-white/15 transition-all" style="background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+  </button>
+
+  <!-- Dots -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+    {% for i in '01234567' %}
+    <button class="carousel-dot w-2 h-2 rounded-full bg-white/30 hover:bg-white transition-all duration-300" data-idx="{{ forloop.counter0 }}"></button>
+    {% endfor %}
+  </div>
+
+  <!-- Slide Counter -->
+  <div class="absolute bottom-8 right-8 z-20 text-white/50 text-sm font-display tracking-wider">
+    <span id="slide-cur">01</span><span class="mx-1">/</span><span>08</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TRUST STRIP
+════════════════════════════════════════════════════════════════ -->
+<section style="background:#0A1F44;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-8 py-8">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-white">
+      <div><div class="font-display text-3xl sm:text-4xl font-bold mb-1">500<span style="color:#2563EB;">+</span></div><div class="text-xs text-gray-400 font-medium tracking-widest uppercase" style="font-family:'DM Sans',sans-serif;">Companies Served</div></div>
+      <div><div class="font-display text-3xl sm:text-4xl font-bold mb-1">50<span style="color:#2563EB;">+</span></div><div class="text-xs text-gray-400 font-medium tracking-widest uppercase" style="font-family:'DM Sans',sans-serif;">Countries</div></div>
+      <div><div class="font-display text-3xl sm:text-4xl font-bold mb-1">$2B<span style="color:#2563EB;">+</span></div><div class="text-xs text-gray-400 font-medium tracking-widest uppercase" style="font-family:'DM Sans',sans-serif;">Equipment Value</div></div>
+      <div><div class="font-display text-3xl sm:text-4xl font-bold mb-1">24<span style="color:#2563EB;">/7</span></div><div class="text-xs text-gray-400 font-medium tracking-widest uppercase" style="font-family:'DM Sans',sans-serif;">Global Support</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     EQUIPMENT CATALOG (tip-group.com style grid)
+════════════════════════════════════════════════════════════════ -->
+<section id="equipment" class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-8">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
+      <div>
+        <span class="section-label mb-3 block">Our Fleet</span>
+        <h2 class="font-display text-4xl sm:text-5xl font-bold" style="color:#0F172A;">Equipment Catalog</h2>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <button onclick="filterEq('all')" class="eq-filter-btn active px-4 py-2 rounded-lg text-sm font-medium transition-all" style="font-family:'DM Sans',sans-serif;">All</button>
+        <button onclick="filterEq('tanker')" class="eq-filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="font-family:'DM Sans',sans-serif;">Tankers</button>
+        <button onclick="filterEq('truck')" class="eq-filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="font-family:'DM Sans',sans-serif;">Trucks</button>
+        <button onclick="filterEq('offshore')" class="eq-filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="font-family:'DM Sans',sans-serif;">Offshore</button>
+        <button onclick="filterEq('storage')" class="eq-filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="font-family:'DM Sans',sans-serif;">Storage</button>
+      </div>
+    </div>
+
+    <!-- Equipment Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="eq-grid">
+      {% for item in equipment %}
+      <div class="card card-hover eq-item" data-cat="{{ item.category }}">
+        <!-- Image Area -->
+        <div class="relative overflow-hidden rounded-t-xl" style="height:220px;">
+          {% if item.display_image %}
+          <img src="{{ item.display_image }}" alt="{{ item.name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
+          {% else %}
+          <div class="w-full h-full flex items-center justify-center" style="background:linear-gradient(135deg,#EEF2FA 0%,#D5DFF3 100%);">
+            <svg class="w-20 h-20" style="color:#ABBFE7;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          </div>
+          {% endif %}
+          <div class="absolute top-3 left-3 flex gap-2">
+            <span class="badge-blue text-xs px-3 py-1">{{ item.get_category_display }}</span>
+            {% if item.featured %}<span class="text-xs px-3 py-1 rounded-full font-bold" style="background:#0A1F44;color:#fff;font-family:'DM Sans',sans-serif;font-size:0.7rem;">FEATURED</span>{% endif %}
+          </div>
+          <div class="absolute top-3 right-3">
+            <span class="badge-success text-xs px-3 py-1">Available</span>
+          </div>
+        </div>
+        <!-- Content -->
+        <div class="p-5">
+          <h3 class="font-display font-bold text-lg mb-2" style="color:#0F172A;">{{ item.name }}</h3>
+          <p class="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-2" style="font-family:'DM Sans',sans-serif;">{{ item.description }}</p>
+          <div class="flex items-center gap-3 text-xs text-gray-400 mb-4" style="font-family:'DM Sans',sans-serif;">
+            {% if item.location %}<span class="flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>{{ item.location }}</span>{% endif %}
+            {% if item.capacity %}<span>·</span><span class="flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 20h16a2 2 0 002-2V6a2 2 0 00-2-2H4a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>{{ item.capacity }}</span>{% endif %}
+          </div>
+          <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+            <div><span class="font-display text-2xl font-bold" style="color:#0A1F44;">${{ item.daily_rate|floatformat:0 }}</span><span class="text-xs text-gray-400 ml-1" style="font-family:'DM Sans',sans-serif;">/day</span></div>
+            <a href="{% url 'equipment_detail' item.pk %}" class="btn-primary px-5 py-2.5 text-sm">Rent Now</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="text-center mt-12">
+      <a href="{% url 'equipment_list' %}" class="btn-outline px-8 py-3.5 text-sm inline-flex items-center gap-2">View All Equipment <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     INVESTMENT SECTION
+════════════════════════════════════════════════════════════════ -->
+<section class="py-20" style="background:#F3F4F6;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div>
+        <span class="section-label mb-4 block">Investment Program</span>
+        <h2 class="font-display text-4xl sm:text-5xl font-bold mb-6" style="color:#0F172A;">Invest in Oil & Gas<br>Markets</h2>
+        <p class="text-gray-600 text-base leading-relaxed mb-6" style="font-family:'DM Sans',sans-serif;">Earn consistent returns by investing in our professionally managed oil and gas equipment operations. Choose from flexible investment plans starting at just $500.</p>
+        <div class="grid grid-cols-3 gap-4 mb-8">
+          <div class="card p-4 text-center">
+            <div class="font-display text-2xl font-bold mb-1" style="color:#0A1F44;">8%</div>
+            <div class="text-xs text-gray-500" style="font-family:'DM Sans',sans-serif;">Starter ROI</div>
+          </div>
+          <div class="card p-4 text-center" style="background:#0A1F44;">
+            <div class="font-display text-2xl font-bold mb-1 text-white">16%</div>
+            <div class="text-xs text-blue-300" style="font-family:'DM Sans',sans-serif;">Growth ROI</div>
+          </div>
+          <div class="card p-4 text-center">
+            <div class="font-display text-2xl font-bold mb-1" style="color:#2563EB;">24%</div>
+            <div class="text-xs text-gray-500" style="font-family:'DM Sans',sans-serif;">Premium ROI</div>
+          </div>
+        </div>
+        <a href="{% url 'register' %}" class="btn-primary px-8 py-3.5 text-sm inline-flex items-center gap-2">Start Investing Today <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="card p-6 col-span-2"><h4 class="font-display font-bold text-lg mb-3" style="color:#0F172A;">Starter Plan</h4><p class="text-gray-500 text-sm mb-4" style="font-family:'DM Sans',sans-serif;">Min $500 investment, 30-day lock period, 8% annual return paid monthly.</p><div class="flex items-center justify-between"><span class="text-xs text-gray-400" style="font-family:'DM Sans',sans-serif;">Min: $500</span><span class="badge-blue">8% / year</span></div></div>
+        <div class="card p-6"><h4 class="font-display font-bold mb-2" style="color:#0F172A;">Growth</h4><p class="text-gray-500 text-sm mb-3" style="font-family:'DM Sans',sans-serif;">$5,000 min, 60 days, 16% annual.</p><span class="badge-blue">16% / year</span></div>
+        <div class="card p-6" style="background:#0A1F44;border-color:#0A1F44;"><h4 class="font-display font-bold mb-2 text-white">Premium</h4><p class="text-blue-200 text-sm mb-3" style="font-family:'DM Sans',sans-serif;">$25,000 min, 90 days, 24% annual.</p><span class="text-xs px-3 py-1 rounded-full font-bold" style="background:#2563EB;color:#fff;font-family:'DM Sans',sans-serif;">24% / year</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SERVICES
+════════════════════════════════════════════════════════════════ -->
+<section id="services" class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-8">
+    <div class="text-center mb-14">
+      <span class="section-label mb-3 block">What We Offer</span>
+      <h2 class="font-display text-4xl sm:text-5xl font-bold" style="color:#0F172A;">Our Core Services</h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for s in services %}
+      <div class="card card-hover p-7">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:#EEF2FA;">
+          <svg class="w-6 h-6" style="color:#0A1F44;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ s.icon }}"/></svg>
+        </div>
+        <h3 class="font-display font-bold text-lg mb-2" style="color:#0F172A;">{{ s.title }}</h3>
+        <p class="text-gray-500 text-sm leading-relaxed" style="font-family:'DM Sans',sans-serif;">{{ s.desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HOW IT WORKS
+════════════════════════════════════════════════════════════════ -->
+<section class="py-20" style="background:#0A1F44;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-8">
+    <div class="text-center mb-14">
+      <span class="text-blue-400 text-xs font-bold tracking-widest uppercase block mb-3" style="font-family:'DM Sans',sans-serif;">Simple Process</span>
+      <h2 class="font-display text-4xl sm:text-5xl font-bold text-white">How It Works</h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      {% for step in steps %}
+      <div class="text-center">
+        <div class="w-14 h-14 rounded-full border-2 mx-auto mb-5 flex items-center justify-center" style="border-color:#2563EB;background:rgba(37,99,235,0.1);">
+          <span class="font-display text-2xl font-bold" style="color:#2563EB;">0{{ forloop.counter }}</span>
+        </div>
+        <h3 class="font-display font-bold text-lg text-white mb-2">{{ step.title }}</h3>
+        <p class="text-gray-400 text-sm leading-relaxed" style="font-family:'DM Sans',sans-serif;">{{ step.desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ABOUT
+════════════════════════════════════════════════════════════════ -->
+<section id="about" class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div>
+        <span class="section-label mb-4 block">About Hordstake</span>
+        <h2 class="font-display text-4xl sm:text-5xl font-bold mb-6" style="color:#0F172A;">Trusted Industrial Partner Since 2010</h2>
+        <p class="text-gray-600 text-base leading-relaxed mb-6" style="font-family:'DM Sans',sans-serif;">Hordstake operates a world-class fleet of oil and gas equipment serving energy companies across 50+ countries. Our mission is to make premium-grade industrial equipment accessible to any company, anywhere.</p>
+        <p class="text-gray-500 text-base leading-relaxed mb-8" style="font-family:'DM Sans',sans-serif;">All equipment meets ISO 9001, API 4F, and international maritime safety standards. Dedicated account managers and 24/7 technical support included with every rental.</p>
+        <div class="grid grid-cols-3 gap-6">
+          <div class="border-l-4 pl-4" style="border-color:#0A1F44;"><div class="font-display text-3xl font-bold" style="color:#0A1F44;">15+</div><div class="text-xs text-gray-500 mt-1" style="font-family:'DM Sans',sans-serif;">Years Experience</div></div>
+          <div class="border-l-4 pl-4" style="border-color:#2563EB;"><div class="font-display text-3xl font-bold" style="color:#2563EB;">200+</div><div class="text-xs text-gray-500 mt-1" style="font-family:'DM Sans',sans-serif;">Equipment Units</div></div>
+          <div class="border-l-4 pl-4" style="border-color:#22C55E;"><div class="font-display text-3xl font-bold" style="color:#22C55E;">99%</div><div class="text-xs text-gray-500 mt-1" style="font-family:'DM Sans',sans-serif;">Uptime Rate</div></div>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="rounded-2xl overflow-hidden" style="height:280px;"><div class="w-full h-full" style="background:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=80') center/cover;"></div></div>
+        <div class="grid grid-rows-2 gap-4">
+          <div class="rounded-2xl overflow-hidden"><div class="w-full h-full" style="background:url('https://images.unsplash.com/photo-1565117100030-4fba1671f83c?w=600&q=80') center/cover;height:132px;"></div></div>
+          <div class="rounded-2xl flex items-center justify-center" style="background:#0A1F44;height:132px;"><div class="text-center text-white"><div class="font-display text-3xl font-bold mb-1">ISO</div><div class="text-xs text-gray-400 tracking-widest" style="font-family:'DM Sans',sans-serif;">CERTIFIED</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TRUSTED PARTNERS — Infinite Scroll Ticker
+════════════════════════════════════════════════════════════════ -->
+<section class="py-16 bg-white overflow-hidden" id="partners">
+  <div class="max-w-7xl mx-auto px-4 sm:px-8 text-center mb-10">
+    <span class="section-label mb-3 block">Global Network</span>
+    <h2 class="font-display text-4xl sm:text-5xl font-bold" style="color:#0F172A;">Trusted by Industry Leaders</h2>
+    <p class="text-gray-500 mt-3 text-base" style="font-family:DM Sans,sans-serif;">Hordstake is the preferred equipment rental partner for the world's largest oil and gas companies.</p>
+  </div>
+  <!-- Infinite scroll ticker -->
+  <div class="relative" style="overflow:hidden;">
+    <div class="ticker-track flex gap-12 items-center" id="ticker">
+      {% for p in partners %}
+      <div class="flex-shrink-0 flex flex-col items-center gap-3 px-6">
+        <div class="w-28 h-16 flex items-center justify-center">
+          <img src="{{ p.logo }}" alt="{{ p.name }}" class="max-h-12 max-w-28 object-contain" style="filter:grayscale(100%) opacity(0.55);" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+          <div class="hidden w-full h-full items-center justify-center rounded-lg" style="background:#F3F4F6;">
+            <span class="font-display font-bold text-lg" style="color:#9CA3AF;">{{ p.name|slice:':4'|upper }}</span>
+          </div>
+        </div>
+        <span class="text-xs font-semibold" style="color:#9CA3AF;font-family:DM Sans,sans-serif;">{{ p.name }}</span>
+      </div>
+      {% endfor %}
+      <!-- Duplicate for seamless loop -->
+      {% for p in partners %}
+      <div class="flex-shrink-0 flex flex-col items-center gap-3 px-6">
+        <div class="w-28 h-16 flex items-center justify-center">
+          <img src="{{ p.logo }}" alt="{{ p.name }}" class="max-h-12 max-w-28 object-contain" style="filter:grayscale(100%) opacity(0.55);" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+          <div class="hidden w-full h-full items-center justify-center rounded-lg" style="background:#F3F4F6;">
+            <span class="font-display font-bold text-lg" style="color:#9CA3AF;">{{ p.name|slice:':4'|upper }}</span>
+          </div>
+        </div>
+        <span class="text-xs font-semibold" style="color:#9CA3AF;font-family:DM Sans,sans-serif;">{{ p.name }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <style>
+  .ticker-track { animation: ticker-scroll 30s linear infinite; width: max-content; }
+  .ticker-track:hover { animation-play-state: paused; }
+  @keyframes ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  </style>
+  <div class="max-w-7xl mx-auto px-4 sm:px-8 mt-12">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+      <div class="card p-5"><div class="font-display text-3xl font-bold mb-1" style="color:#0A1F44;">500+</div><div class="text-xs text-gray-400 font-medium" style="font-family:DM Sans,sans-serif;">Corporate Clients</div></div>
+      <div class="card p-5"><div class="font-display text-3xl font-bold mb-1" style="color:#2563EB;">50+</div><div class="text-xs text-gray-400 font-medium" style="font-family:DM Sans,sans-serif;">Countries Served</div></div>
+      <div class="card p-5"><div class="font-display text-3xl font-bold mb-1" style="color:#0A1F44;">$2B+</div><div class="text-xs text-gray-400 font-medium" style="font-family:DM Sans,sans-serif;">Equipment Value</div></div>
+      <div class="card p-5"><div class="font-display text-3xl font-bold mb-1" style="color:#2563EB;">15+</div><div class="text-xs text-gray-400 font-medium" style="font-family:DM Sans,sans-serif;">Years Experience</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     CTA BANNER
+════════════════════════════════════════════════════════════════ -->
+<section class="py-20" style="background:#2563EB;">
+  <div class="max-w-4xl mx-auto px-4 text-center">
+    <h2 class="font-display text-4xl sm:text-5xl font-bold text-white mb-4">Ready to Get Started?</h2>
+    <p class="text-blue-100 text-lg mb-10" style="font-family:'DM Sans',sans-serif;">Join 500+ companies already using Hordstake for premium equipment rental and investments.</p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a href="{% url 'register' %}" class="btn-primary px-10 py-4 text-sm bg-white" style="color:#0A1F44;">Create Free Account</a>
+      <a href="{% url 'equipment_list' %}" class="px-10 py-4 text-sm font-semibold text-white border-2 border-white/50 rounded-lg hover:border-white hover:bg-white/10 transition-all" style="font-family:'DM Sans',sans-serif;">Browse Equipment</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════════════════ -->
+<footer style="background:#0F172A;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-8 py-16">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+      <div class="lg:col-span-2">
+        <a href="/" class="flex items-center gap-2.5 font-display font-bold text-xl tracking-tight text-white mb-4" style="text-decoration:none;">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#2563EB;"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+          HORDSTAKE
+        </a>
+        <p class="text-gray-400 text-sm leading-relaxed max-w-xs mb-6" style="font-family:'DM Sans',sans-serif;">Global oil & gas equipment rental and investment platform. Serving energy companies in 50+ countries since 2010.</p>
+        <div class="flex items-center gap-2">
+          <a href="https://wa.me/2349121304245" class="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-green-500 transition-colors" style="background:rgba(255,255,255,0.08);">
+            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a9.87 9.87 0 00-5.031 1.378l-.361.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 012.15 11.89C2.151 6.44 6.587 2.006 12.04 2.006c2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4 class="font-display font-semibold text-sm text-white mb-5 tracking-wide">Services</h4>
+        <ul class="space-y-3">
+          {% for link in footer_links %}
+          <li><a href="{% url 'equipment_list' %}" class="text-gray-400 text-sm hover:text-white transition-colors" style="font-family:'DM Sans',sans-serif;text-decoration:none;">{{ link }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-display font-semibold text-sm text-white mb-5 tracking-wide">Company</h4>
+        <ul class="space-y-3">
+          <li><a href="{% url 'register' %}" class="text-gray-400 text-sm hover:text-white transition-colors" style="font-family:'DM Sans',sans-serif;text-decoration:none;">Create Account</a></li>
+          <li><a href="{% url 'login' %}" class="text-gray-400 text-sm hover:text-white transition-colors" style="font-family:'DM Sans',sans-serif;text-decoration:none;">Sign In</a></li>
+          <li><a href="#about" class="text-gray-400 text-sm hover:text-white transition-colors" style="font-family:'DM Sans',sans-serif;text-decoration:none;">About Us</a></li>
+          <li><a href="https://wa.me/2349121304245" class="text-gray-400 text-sm hover:text-white transition-colors" style="font-family:'DM Sans',sans-serif;text-decoration:none;">Contact Support</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t pt-8 flex flex-col sm:flex-row items-center justify-between gap-4" style="border-color:rgba(255,255,255,0.08);">
+      <p class="text-gray-500 text-sm" style="font-family:'DM Sans',sans-serif;">© 2025 Hordstake Energy Solutions. All rights reserved.</p>
+      <p class="text-gray-600 text-xs" style="font-family:'DM Sans',sans-serif;">ISO Certified · Licensed & Insured · OSHA Compliant · API 4F</p>
+    </div>
+  </div>
+</footer>
+
+{% endblock %}
+{% block extra_scripts %}
+<script>
+// ── Carousel ──────────────────────────────────────────────
+const _total = 8;
+let _cur = 0, _auto;
+const _track = document.getElementById('carousel-track');
+const _dots  = document.querySelectorAll('.carousel-dot');
+const _counter = document.getElementById('slide-cur');
+
+function _goTo(n) {
+  _cur = (n + _total) % _total;
+  _track.style.transform = `translateX(-${_cur * 12.5}%)`;
+  _dots.forEach((d, i) => {
+    d.classList.toggle('bg-white', i === _cur);
+    d.classList.toggle('bg-white/30', i !== _cur);
+    d.style.transform = i === _cur ? 'scale(1.35)' : '';
+  });
+  _counter.textContent = String(_cur + 1).padStart(2, '0');
+}
+function _carouselNext() { clearInterval(_auto); _goTo(_cur + 1); _resetAuto(); }
+function _carouselPrev() { clearInterval(_auto); _goTo(_cur - 1); _resetAuto(); }
+function _resetAuto() { _auto = setInterval(() => _goTo(_cur + 1), 5000); }
+_dots.forEach((d, i) => d.addEventListener('click', () => { clearInterval(_auto); _goTo(i); _resetAuto(); }));
+// Touch swipe
+let _tx = 0;
+document.getElementById('hero').addEventListener('touchstart', e => _tx = e.touches[0].clientX, {passive:true});
+document.getElementById('hero').addEventListener('touchend', e => {
+  const diff = _tx - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 40) { clearInterval(_auto); _goTo(_cur + (diff > 0 ? 1 : -1)); _resetAuto(); }
+}, {passive:true});
+_goTo(0); _resetAuto();
+
+// ── Equipment Filter ───────────────────────────────────────
+const _filterBtns = document.querySelectorAll('.eq-filter-btn');
+_filterBtns.forEach(btn => {
+  btn.style.background = 'transparent';
+  btn.style.color = '#6B7280';
+  btn.style.border = '1.5px solid #E5E7EB';
+  btn.addEventListener('click', () => {
+    _filterBtns.forEach(b => { b.classList.remove('active'); b.style.background = 'transparent'; b.style.color = '#6B7280'; b.style.border = '1.5px solid #E5E7EB'; });
+    btn.classList.add('active'); btn.style.background = '#0A1F44'; btn.style.color = '#fff'; btn.style.border = '1.5px solid #0A1F44';
+  });
+});
+function filterEq(cat) {
+  document.querySelectorAll('.eq-item').forEach(el => {
+    el.style.display = (cat === 'all' || el.dataset.cat === cat) ? '' : 'none';
+  });
+}
+// Init active state
+_filterBtns[0].style.background = '#0A1F44'; _filterBtns[0].style.color = '#fff'; _filterBtns[0].style.border = '1.5px solid #0A1F44';
+
+// ── Navbar scroll effect ───────────────────────────────────
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('main-nav');
+  if (window.scrollY > 20) { nav.style.boxShadow = '0 2px 16px rgba(10,31,68,0.1)'; }
+  else { nav.style.boxShadow = '0 1px 4px rgba(10,31,68,0.06)'; }
+});
+</script>
+{% endblock %}

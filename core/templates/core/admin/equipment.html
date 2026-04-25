@@ -1,0 +1,168 @@
+{% extends 'core/admin/admin_base.html' %}
+{% block page_title %}Equipment{% endblock %}
+{% block page_subtitle %}Manage the equipment catalog{% endblock %}
+{% block a_equip %}active{% endblock %}
+{% block content %}
+
+<div class="rounded-2xl p-6 card-dark">
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+    <div class="flex items-center gap-3">
+      <h3 class="font-display font-bold text-white text-xl">Equipment Catalog</h3>
+      <span class="badge-blue">{{ equipment.count }} items</span>
+    </div>
+    <a href="{% url 'admin_add_equipment' %}" class="btn-blue px-5 py-2.5 text-sm flex items-center gap-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      Add Equipment
+    </a>
+  </div>
+
+  {% if equipment %}
+  <div class="overflow-x-auto">
+    <table class="w-full" style="min-width:760px;">
+      <thead>
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+          <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:'DM Sans',sans-serif;">Image</th>
+          <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:'DM Sans',sans-serif;">Name</th>
+          <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:'DM Sans',sans-serif;">Category</th>
+          <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:'DM Sans',sans-serif;">Daily Rate</th>
+          <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:'DM Sans',sans-serif;">Status</th>
+          <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:'DM Sans',sans-serif;">Featured</th>
+          <th class="text-left pb-3 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:'DM Sans',sans-serif;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in equipment %}
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+
+          <!-- Image thumbnail -->
+          <td class="py-3 pr-4">
+            {% if item.display_image %}
+            <img src="{{ item.display_image }}" alt="{{ item.name }}"
+                 class="w-14 h-10 object-cover rounded-lg"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+            <div class="hidden w-14 h-10 rounded-lg items-center justify-center" style="background:rgba(37,99,235,0.1);">
+              <svg class="w-5 h-5" style="color:#334155;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            </div>
+            {% else %}
+            <div class="w-14 h-10 rounded-lg flex items-center justify-center" style="background:rgba(37,99,235,0.1);">
+              <svg class="w-5 h-5" style="color:#334155;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            </div>
+            {% endif %}
+          </td>
+
+          <td class="py-3 pr-4">
+            <p class="text-white text-sm font-semibold" style="font-family:'DM Sans',sans-serif;">{{ item.name }}</p>
+            {% if item.location %}<p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ item.location }}</p>{% endif %}
+          </td>
+
+          <td class="py-3 pr-4">
+            <span class="badge-blue">{{ item.get_category_display }}</span>
+          </td>
+
+          <td class="py-3 pr-4">
+            <span class="font-display font-bold text-white">${{ item.daily_rate|floatformat:0 }}</span>
+            <span class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">/day</span>
+          </td>
+
+          <td class="py-3 pr-4">
+            <span class="{% if item.status == 'available' %}badge-success{% elif item.status == 'rented' %}badge-blue{% else %}badge-pending{% endif %}">
+              {{ item.get_status_display }}
+            </span>
+          </td>
+
+          <td class="py-3 pr-4 text-sm" style="color:{% if item.featured %}#22C55E{% else %}#334155{% endif %};font-family:'DM Sans',sans-serif;">
+            {% if item.featured %}★ Yes{% else %}No{% endif %}
+          </td>
+
+          <!-- Actions: Delete button -->
+          <td class="py-3">
+            <button onclick="confirmDelete({{ item.pk }}, '{{ item.name|escapejs }}')"
+                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all hover:opacity-90"
+                    style="background:rgba(239,68,68,0.12);color:#EF4444;font-family:'DM Sans',sans-serif;">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              Delete
+            </button>
+          </td>
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="text-center py-16">
+    <svg class="w-14 h-14 mx-auto mb-4" style="color:#1E293B;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+    <p class="text-white font-display font-bold text-xl mb-2">No equipment yet</p>
+    <p class="text-sm mb-5" style="color:#64748B;font-family:'DM Sans',sans-serif;">Add your first piece of equipment to the catalog</p>
+    <a href="{% url 'admin_add_equipment' %}" class="btn-blue px-6 py-3 text-sm">+ Add Equipment</a>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.75);">
+  <div class="w-full max-w-md rounded-2xl overflow-hidden" style="box-shadow:0 24px 64px rgba(0,0,0,0.5);">
+
+    <!-- Modal Header -->
+    <div class="px-8 py-7 text-center" style="background:#1E293B;border-bottom:1px solid rgba(255,255,255,0.06);">
+      <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style="background:rgba(239,68,68,0.15);">
+        <svg class="w-7 h-7" style="color:#EF4444;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+      </div>
+      <h3 class="font-display font-bold text-white text-xl mb-2">Delete Equipment?</h3>
+      <p class="text-sm" style="color:#94A3B8;font-family:'DM Sans',sans-serif;">
+        You are about to permanently delete:<br/>
+        <strong id="delete-item-name" class="text-white"></strong>
+      </p>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="px-8 py-6" style="background:#0F172A;">
+      <div class="rounded-xl p-4 mb-5 flex gap-3" style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);">
+        <svg class="w-5 h-5 flex-shrink-0 mt-0.5" style="color:#EF4444;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <p class="text-xs" style="color:#FCA5A5;font-family:'DM Sans',sans-serif;">
+          This action cannot be undone. The equipment will be permanently removed from the catalog and will no longer appear on the website. Any active rentals for this item will be cancelled.
+        </p>
+      </div>
+
+      <!-- Hidden form that POSTs to delete URL -->
+      <form id="delete-form" method="post" action="">
+        {% csrf_token %}
+        <div class="flex gap-3">
+          <button type="submit"
+                  class="flex-1 py-3.5 text-sm font-bold rounded-xl transition-all"
+                  style="background:#DC2626;color:#fff;font-family:'DM Sans',sans-serif;">
+            Yes, Delete Permanently
+          </button>
+          <button type="button"
+                  onclick="closeDeleteModal()"
+                  class="flex-1 py-3.5 text-sm font-semibold rounded-xl transition-all hover:bg-white/10"
+                  style="background:rgba(255,255,255,0.06);color:#94A3B8;font-family:'DM Sans',sans-serif;">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function confirmDelete(pk, name) {
+  document.getElementById('delete-item-name').textContent = name;
+  document.getElementById('delete-form').action = '/admin_dashboard/equipment/' + pk + '/delete/';
+  document.getElementById('delete-modal').classList.remove('hidden');
+}
+function closeDeleteModal() {
+  document.getElementById('delete-modal').classList.add('hidden');
+}
+// Close on backdrop click
+document.getElementById('delete-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeDeleteModal();
+});
+// Close on Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeDeleteModal();
+});
+</script>
+
+{% endblock %}

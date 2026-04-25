@@ -1,0 +1,54 @@
+{% extends 'core/dashboard_base.html' %}
+{% block page_title %}My Listings{% endblock %}
+{% block page_subtitle %}Equipment you have listed for sale{% endblock %}
+{% block sidebar_nav %}
+<a href="{% url 'dashboard' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Overview</a>
+<a href="{% url 'sell_equipment' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>Sell Equipment</a>
+<a href="{% url 'my_listings' %}" class="sidebar-link active"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>My Listings</a>
+<a href="{% url 'deposit' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>Deposit</a>
+{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+  <h3 class="font-display font-bold text-white text-xl">My Equipment Listings</h3>
+  <a href="{% url 'sell_equipment' %}" class="btn-blue px-5 py-2.5 text-sm">+ New Listing</a>
+</div>
+{% if listings %}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+  {% for l in listings %}
+  <div class="rounded-2xl overflow-hidden card-dark">
+    {% if l.image %}
+    <div class="relative" style="height:160px;"><img src="{{ l.image.url }}" alt="{{ l.title }}" class="w-full h-full object-cover"/></div>
+    {% else %}
+    <div class="flex items-center justify-center" style="height:120px;background:rgba(37,99,235,0.08);">
+      <svg class="w-12 h-12" style="color:#1E3A8A;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+    </div>
+    {% endif %}
+    <div class="p-5">
+      <div class="flex items-start justify-between mb-2">
+        <h4 class="text-white font-display font-bold">{{ l.title }}</h4>
+        {% if l.status == 'pending' %}<span class="badge-pending flex-shrink-0 ml-2">🟡 Pending</span>
+        {% elif l.status == 'approved' %}<span class="badge-success flex-shrink-0 ml-2">✅ Live</span>
+        {% elif l.status == 'sold' %}<span class="badge-blue flex-shrink-0 ml-2">🎉 Sold</span>
+        {% else %}<span class="badge-error flex-shrink-0 ml-2">🔴 Rejected</span>{% endif %}
+      </div>
+      <p class="text-xs mb-3 line-clamp-2" style="color:#64748B;font-family:DM Sans,sans-serif;">{{ l.description }}</p>
+      <div class="flex items-center justify-between">
+        <span class="font-display font-bold text-white">${{ l.asking_price|floatformat:0 }}</span>
+        <span class="text-xs" style="color:#64748B;font-family:DM Sans,sans-serif;">{{ l.created_at|date:"M d, Y" }}</span>
+      </div>
+      {% if l.status == 'rejected' and l.admin_note %}
+      <div class="mt-3 p-3 rounded-lg" style="background:rgba(239,68,68,0.08);"><p class="text-xs" style="color:#FCA5A5;font-family:DM Sans,sans-serif;">Rejection reason: {{ l.admin_note }}</p></div>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="rounded-2xl p-16 card-dark text-center">
+  <svg class="w-16 h-16 mx-auto mb-4" style="color:#1E293B;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+  <p class="text-white font-display font-bold text-xl mb-2">No Listings Yet</p>
+  <p class="text-sm mb-6" style="color:#64748B;font-family:DM Sans,sans-serif;">List your oil and gas equipment for sale on our platform</p>
+  <a href="{% url 'sell_equipment' %}" class="btn-blue px-8 py-3.5 text-sm">Create First Listing</a>
+</div>
+{% endif %}
+{% endblock %}

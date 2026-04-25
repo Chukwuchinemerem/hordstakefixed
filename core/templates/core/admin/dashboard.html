@@ -1,0 +1,151 @@
+{% extends 'core/dashboard_base.html' %}
+{% block page_title %}Admin Dashboard{% endblock %}
+{% block page_subtitle %}Platform overview and control panel{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'admin_dashboard' %}" class="sidebar-link active">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Dashboard
+</a>
+<a href="{% url 'admin_users' %}" class="sidebar-link">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>Users
+</a>
+<a href="{% url 'admin_rentals' %}" class="sidebar-link">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>Rentals
+</a>
+<a href="{% url 'admin_equipment' %}" class="sidebar-link">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>Equipment
+</a>
+<a href="{% url 'admin_listings' %}" class="sidebar-link">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+  Sale Listings {% if pending_listings %}<span class="ml-auto text-xs font-bold px-2 py-0.5 rounded-full" style="background:#EAB308;color:#000;">{{ pending_listings }}</span>{% endif %}
+</a>
+<a href="{% url 'admin_kyc_list' %}" class="sidebar-link">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+  KYC {% if pending_kyc %}<span class="ml-auto text-xs font-bold px-2 py-0.5 rounded-full" style="background:#A855F7;color:#fff;">{{ pending_kyc }}</span>{% endif %}
+</a>
+<a href="{% url 'admin_add_funds' %}" class="sidebar-link">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>Add Funds
+</a>
+<a href="{% url 'admin_transactions' %}" class="sidebar-link">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+  Transactions {% if pending_deposits %}<span class="ml-auto text-xs font-bold px-2 py-0.5 rounded-full" style="background:#22C55E;color:#000;">{{ pending_deposits }}</span>{% endif %}
+</a>
+<a href="{% url 'admin_wallet_settings' %}" class="sidebar-link">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>Wallet Settings
+</a>
+<a href="{% url 'admin_notifications' %}" class="sidebar-link">
+  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>Notifications
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Stats -->
+<div class="grid grid-cols-2 xl:grid-cols-5 gap-4 mb-6">
+  <div class="rounded-2xl p-5" style="background:linear-gradient(135deg,#1E3A8A,#2563EB);">
+    <p class="text-blue-200 text-xs font-bold tracking-widest mb-2" style="font-family:'DM Sans',sans-serif;">USERS</p>
+    <div class="font-display text-3xl font-bold text-white">{{ total_users }}</div>
+  </div>
+  <div class="rounded-2xl p-5 card-dark">
+    <p class="text-xs font-bold tracking-widest mb-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">REVENUE</p>
+    <div class="font-display text-2xl font-bold text-white">${{ total_revenue|floatformat:0 }}</div>
+  </div>
+  <div class="rounded-2xl p-5 card-dark">
+    <p class="text-xs font-bold tracking-widest mb-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">ACTIVE RENTALS</p>
+    <div class="font-display text-3xl font-bold text-white">{{ active_rentals }}</div>
+  </div>
+  <div class="rounded-2xl p-5 card-dark">
+    <p class="text-xs font-bold tracking-widest mb-2" style="color:#EAB308;font-family:'DM Sans',sans-serif;">PENDING DEPOSITS</p>
+    <div class="font-display text-3xl font-bold text-white">{{ pending_deposits }}</div>
+    <a href="{% url 'admin_transactions' %}" class="text-xs mt-1 inline-block" style="color:#2563EB;font-family:'DM Sans',sans-serif;text-decoration:none;">Review →</a>
+  </div>
+  <div class="rounded-2xl p-5 card-dark">
+    <p class="text-xs font-bold tracking-widest mb-2" style="color:#A855F7;font-family:'DM Sans',sans-serif;">PENDING KYC</p>
+    <div class="font-display text-3xl font-bold text-white">{{ pending_kyc }}</div>
+    <a href="{% url 'admin_kyc_list' %}" class="text-xs mt-1 inline-block" style="color:#2563EB;font-family:'DM Sans',sans-serif;text-decoration:none;">Review →</a>
+  </div>
+</div>
+
+<!-- Quick Actions + Recent Transactions -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-5 mb-5">
+  <div class="rounded-2xl p-5 card-dark">
+    <h3 class="font-display font-bold text-white text-lg mb-4">Quick Actions</h3>
+    <div class="space-y-2">
+      {% for action in admin_actions %}
+      <a href="{{ action.url }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all group" style="text-decoration:none;">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:{{ action.bg }};">
+          <svg class="w-4 h-4" style="color:{{ action.color }};" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ action.icon }}"/></svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-white text-sm font-semibold truncate" style="font-family:'DM Sans',sans-serif;">{{ action.title }}</p>
+          <p class="text-xs truncate" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ action.sub }}</p>
+        </div>
+        <svg class="w-4 h-4 flex-shrink-0 group-hover:translate-x-1 transition-transform" style="color:#334155;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="xl:col-span-2 rounded-2xl p-5 card-dark">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-display font-bold text-white text-lg">Recent Transactions</h3>
+      <a href="{% url 'admin_transactions' %}" class="text-xs" style="color:#2563EB;font-family:'DM Sans',sans-serif;text-decoration:none;">View all</a>
+    </div>
+    <div class="space-y-2">
+      {% for txn in recent_transactions %}
+      <div class="flex items-center justify-between p-3 rounded-xl" style="background:rgba(255,255,255,0.04);">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(37,99,235,0.12);">
+            <svg class="w-4 h-4" style="color:#3B82F6;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div class="min-w-0">
+            <p class="text-white text-sm font-semibold truncate" style="font-family:'DM Sans',sans-serif;">{{ txn.user.username }}</p>
+            <p class="text-xs capitalize truncate" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ txn.transaction_type }} · {{ txn.created_at|date:"M d, Y" }}</p>
+          </div>
+        </div>
+        <div class="text-right flex-shrink-0 ml-3">
+          <p class="font-display font-bold text-white text-sm">${{ txn.amount|floatformat:2 }}</p>
+          <span class="{% if txn.status == 'confirmed' %}badge-success{% elif txn.status == 'pending' %}badge-pending{% else %}badge-error{% endif %}">{{ txn.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Recent Users -->
+<div class="rounded-2xl p-5 card-dark">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="font-display font-bold text-white text-lg">Recent Users</h3>
+    <a href="{% url 'admin_users' %}" class="text-xs" style="color:#2563EB;font-family:'DM Sans',sans-serif;text-decoration:none;">View all</a>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full" style="min-width:480px;">
+      <thead>
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+          <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:'DM Sans',sans-serif;">User</th>
+          <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:'DM Sans',sans-serif;">Email</th>
+          <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:'DM Sans',sans-serif;">Balance</th>
+          <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:'DM Sans',sans-serif;">Joined</th>
+          <th class="text-left pb-3 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:'DM Sans',sans-serif;">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in recent_users %}
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+          <td class="py-3 pr-4">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-full flex items-center justify-center font-display font-bold text-xs flex-shrink-0" style="background:#1E3A8A;color:#93C5FD;">{{ u.username|first|upper }}</div>
+              <span class="text-white text-sm font-semibold" style="font-family:'DM Sans',sans-serif;">{{ u.username }}</span>
+            </div>
+          </td>
+          <td class="py-3 pr-4 text-sm truncate" style="color:#94A3B8;font-family:'DM Sans',sans-serif;max-width:160px;">{{ u.email }}</td>
+          <td class="py-3 pr-4 font-display font-bold text-white">${{ u.profile.balance|floatformat:2 }}</td>
+          <td class="py-3 pr-4 text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ u.date_joined|date:"M d, Y" }}</td>
+          <td class="py-3"><a href="{% url 'admin_user_detail' u.pk %}" class="badge-blue hover:bg-blue-500/20 transition-colors" style="text-decoration:none;">View</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

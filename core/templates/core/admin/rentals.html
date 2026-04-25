@@ -1,0 +1,35 @@
+{% extends 'core/admin/admin_base.html' %}
+{% block page_title %}Rentals{% endblock %}
+{% block page_subtitle %}All active and past equipment rentals{% endblock %}
+{% block a_rentals %}active{% endblock %}
+{% block content %}
+<div class="rounded-2xl p-6 card-dark">
+  <div class="flex items-center justify-between mb-6"><h3 class="font-display font-bold text-white text-xl">All Rentals</h3><span class="badge-blue">{{ rentals.count }}</span></div>
+  <div class="overflow-x-auto">
+    <table class="w-full" style="min-width:720px;">
+      <thead><tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">User</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Equipment</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Period</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Duration</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Cost</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Status</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Booked</th>
+      </tr></thead>
+      <tbody>
+        {% for r in rentals %}
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+          <td class="py-3.5 pr-4 text-sm font-semibold text-white" style="font-family:'DM Sans',sans-serif;">{{ r.user.username }}</td>
+          <td class="py-3.5 pr-4"><p class="text-white text-sm font-semibold" style="font-family:'DM Sans',sans-serif;">{{ r.equipment.name }}</p><p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ r.equipment.get_category_display }}</p></td>
+          <td class="py-3.5 pr-4 text-xs" style="color:#94A3B8;font-family:'DM Sans',sans-serif;">{{ r.start_date|date:"M d" }} — {{ r.end_date|date:"M d, Y" }}</td>
+          <td class="py-3.5 pr-4 text-sm" style="color:#94A3B8;font-family:'DM Sans',sans-serif;">{{ r.duration_days }}d</td>
+          <td class="py-3.5 pr-4"><span class="font-display font-bold text-white">${{ r.total_cost|floatformat:2 }}</span></td>
+          <td class="py-3.5 pr-4"><span class="{% if r.status == 'active' %}badge-success{% elif r.status == 'pending' %}badge-pending{% elif r.status == 'completed' %}badge-blue{% else %}badge-error{% endif %}">{{ r.status|title }}</span></td>
+          <td class="py-3.5 text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ r.created_at|date:"M d, Y" }}</td>
+        </tr>
+        {% empty %}<tr><td colspan="7" class="py-10 text-center text-sm" style="color:#64748B;font-family:'DM Sans',sans-serif;">No rentals yet.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

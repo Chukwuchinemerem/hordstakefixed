@@ -1,0 +1,49 @@
+{% extends 'core/dashboard_base.html' %}
+{% block page_title %}Referral Program{% endblock %}
+{% block page_subtitle %}Earn $50 for every friend you refer{% endblock %}
+{% block sidebar_nav %}
+<a href="{% url 'dashboard' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Overview</a>
+<a href="{% url 'my_rentals' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>My Rentals</a>
+<a href="{% url 'deposit' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>Deposit</a>
+<a href="{% url 'transactions' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Transactions</a>
+{% endblock %}
+{% block ref_active %}active{% endblock %}
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+  <div class="rounded-2xl p-6" style="background:linear-gradient(135deg,#1E3A8A,#2563EB);">
+    <p class="text-blue-200 text-xs font-bold tracking-widest mb-2" style="font-family:'DM Sans',sans-serif;">TOTAL EARNED</p>
+    <div class="font-display text-3xl font-bold text-white">${{ profile.referral_bonus|floatformat:2 }}</div>
+  </div>
+  <div class="rounded-2xl p-6 card-dark">
+    <p class="text-xs font-bold tracking-widest mb-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">REFERRALS</p>
+    <div class="font-display text-3xl font-bold text-white">{{ profile.referral_count }}</div>
+  </div>
+  <div class="rounded-2xl p-6 card-dark">
+    <p class="text-xs font-bold tracking-widest mb-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">REWARD PER REFERRAL</p>
+    <div class="font-display text-3xl font-bold text-white">$50.00</div>
+  </div>
+</div>
+<div class="rounded-2xl p-6 card-dark mb-6">
+  <h3 class="font-display font-bold text-white text-xl mb-4">Your Referral Link</h3>
+  <p class="text-sm mb-4" style="color:#64748B;font-family:'DM Sans',sans-serif;">Share this link with friends and colleagues. You earn $50 instantly when they register and make their first deposit.</p>
+  <div class="flex gap-3">
+    <code id="ref-link" class="flex-1 text-sm px-4 py-3 rounded-xl break-all" style="background:rgba(255,255,255,0.06);color:#93C5FD;font-family:monospace;">{{ request.scheme }}://{{ request.get_host }}/register/?ref={{ profile.referral_code }}</code>
+    <button onclick="copyRef()" class="btn-blue px-5 py-3 text-sm flex-shrink-0">Copy Link</button>
+  </div>
+</div>
+{% if referred_users %}
+<div class="rounded-2xl p-6 card-dark">
+  <h3 class="font-display font-bold text-white text-xl mb-5">Referred Users</h3>
+  <div class="space-y-3">
+    {% for u in referred_users %}
+    <div class="flex items-center gap-4 p-3.5 rounded-xl" style="background:rgba(255,255,255,0.04);">
+      <div class="w-9 h-9 rounded-full flex items-center justify-center font-display font-bold text-sm flex-shrink-0" style="background:#1E3A8A;color:#93C5FD;">{{ u.user.username|first|upper }}</div>
+      <div><p class="text-white text-sm font-semibold" style="font-family:'DM Sans',sans-serif;">{{ u.user.username }}</p><p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">Joined {{ u.created_at|date:"M d, Y" }}</p></div>
+      <span class="ml-auto badge-success">+$50</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+<script>function copyRef(){const l=document.getElementById('ref-link').textContent;navigator.clipboard.writeText(l).then(()=>{const b=event.target;b.textContent='Copied!';b.style.background='#22C55E';setTimeout(()=>{b.textContent='Copy Link';b.style.background='';},2000);});}</script>
+{% endblock %}

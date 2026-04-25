@@ -1,0 +1,41 @@
+{% extends 'core/dashboard_base.html' %}
+{% block page_title %}Notifications{% endblock %}
+{% block page_subtitle %}Your account alerts and updates{% endblock %}
+{% block sidebar_nav %}
+<a href="{% url 'dashboard' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Overview</a>
+<a href="{% url 'my_rentals' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>My Rentals</a>
+<a href="{% url 'deposit' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>Deposit</a>
+<a href="{% url 'withdraw' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Withdraw</a>
+<a href="{% url 'transactions' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Transactions</a>
+{% endblock %}
+{% block notif_active %}active{% endblock %}
+{% block content %}
+<div class="rounded-2xl p-6 card-dark">
+  <div class="flex items-center justify-between mb-6">
+    <h3 class="font-display font-bold text-white text-xl">All Notifications</h3>
+    <span class="badge-blue">{{ notifications.count }} total</span>
+  </div>
+  {% if notifications %}
+  <div class="space-y-3">
+    {% for n in notifications %}
+    <div class="flex gap-4 p-4 rounded-xl transition-all {% if not n.is_read %}border{% endif %}" style="background:rgba(255,255,255,0.04);{% if not n.is_read %}border-color:rgba(37,99,235,0.3);{% endif %}">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(37,99,235,0.12);">
+        <svg class="w-5 h-5" style="color:#3B82F6;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-start justify-between gap-2">
+          <p class="text-white text-sm font-semibold" style="font-family:'DM Sans',sans-serif;">{{ n.title }}</p>
+          {% if not n.is_read %}<span class="live-dot flex-shrink-0 mt-1.5"></span>{% endif %}
+        </div>
+        <p class="text-sm mt-1 leading-relaxed" style="color:#94A3B8;font-family:'DM Sans',sans-serif;">{{ n.message }}</p>
+        <p class="text-xs mt-2" style="color:#334155;font-family:'DM Sans',sans-serif;">{{ n.created_at|timesince }} ago</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-16"><svg class="w-12 h-12 mx-auto mb-4" style="color:#1E293B;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+  <p class="text-sm" style="color:#64748B;font-family:'DM Sans',sans-serif;">No notifications yet</p></div>
+  {% endif %}
+</div>
+{% endblock %}

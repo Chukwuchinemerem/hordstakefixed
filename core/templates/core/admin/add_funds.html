@@ -1,0 +1,30 @@
+{% extends 'core/admin/admin_base.html' %}
+{% block page_title %}Add Funds{% endblock %}
+{% block page_subtitle %}Manually credit user accounts{% endblock %}
+{% block a_funds %}active{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto">
+  <div class="rounded-2xl p-6 card-dark">
+    <h3 class="font-display font-bold text-white text-xl mb-6">Credit User Account</h3>
+    <form method="post" class="space-y-5">
+      {% csrf_token %}
+      <div>
+        <label class="block text-xs font-bold tracking-widest mb-2" style="color:#94A3B8;font-family:'DM Sans',sans-serif;">SELECT USER</label>
+        <select name="user_id" required class="input-dark">
+          <option value="">Choose a user...</option>
+          {% for u in users %}<option value="{{ u.pk }}" {% if request.GET.user == u.pk|stringformat:"s" %}selected{% endif %}>{{ u.username }} — ${{ u.profile.balance|default:"0.00"|floatformat:2 }}</option>{% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-bold tracking-widest mb-2" style="color:#94A3B8;font-family:'DM Sans',sans-serif;">AMOUNT (USD)</label>
+        <input type="number" name="amount" step="0.01" min="1" required placeholder="e.g. 1000.00" class="input-dark"/>
+      </div>
+      <div>
+        <label class="block text-xs font-bold tracking-widest mb-2" style="color:#94A3B8;font-family:'DM Sans',sans-serif;">REASON / NOTE</label>
+        <input type="text" name="note" placeholder="e.g. Confirmed bank wire transfer" class="input-dark"/>
+      </div>
+      <button type="submit" class="btn-blue w-full py-4 text-sm">Add Funds to Account</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'core/dashboard_base.html' %}
+{% block page_title %}My Rentals{% endblock %}
+{% block page_subtitle %}All your equipment rentals{% endblock %}
+{% block sidebar_nav %}
+<a href="{% url 'dashboard' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Overview</a>
+<a href="{% url 'my_rentals' %}" class="sidebar-link active"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>My Rentals</a>
+<a href="{% url 'deposit' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>Deposit</a>
+<a href="{% url 'withdraw' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Withdraw</a>
+<a href="{% url 'transactions' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Transactions</a>
+{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <div></div>
+  <a href="{% url 'equipment_list' %}" class="btn-blue px-5 py-2.5 text-sm">+ Rent Equipment</a>
+</div>
+{% if rentals %}
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+  {% for r in rentals %}
+  <div class="rounded-2xl p-5 card-dark">
+    <div class="flex items-start justify-between mb-4">
+      <div>
+        <h3 class="font-display font-bold text-white text-lg">{{ r.equipment.name }}</h3>
+        <p class="text-sm mt-0.5" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ r.equipment.get_category_display }}</p>
+      </div>
+      <span class="{% if r.status == 'active' %}badge-success{% elif r.status == 'pending' %}badge-pending{% elif r.status == 'completed' %}badge-blue{% else %}badge-error{% endif %} ml-2 flex-shrink-0">{{ r.status|title }}</span>
+    </div>
+    <div class="grid grid-cols-2 gap-3 mb-4">
+      <div class="rounded-xl p-3" style="background:rgba(255,255,255,0.04);">
+        <p class="text-xs mb-1" style="color:#64748B;font-family:'DM Sans',sans-serif;">Start Date</p>
+        <p class="text-white text-sm font-semibold" style="font-family:'DM Sans',sans-serif;">{{ r.start_date|date:"M d, Y" }}</p>
+      </div>
+      <div class="rounded-xl p-3" style="background:rgba(255,255,255,0.04);">
+        <p class="text-xs mb-1" style="color:#64748B;font-family:'DM Sans',sans-serif;">End Date</p>
+        <p class="text-white text-sm font-semibold" style="font-family:'DM Sans',sans-serif;">{{ r.end_date|date:"M d, Y" }}</p>
+      </div>
+      <div class="rounded-xl p-3" style="background:rgba(255,255,255,0.04);">
+        <p class="text-xs mb-1" style="color:#64748B;font-family:'DM Sans',sans-serif;">Duration</p>
+        <p class="text-white text-sm font-semibold" style="font-family:'DM Sans',sans-serif;">{{ r.duration_days }} days</p>
+      </div>
+      <div class="rounded-xl p-3" style="background:rgba(37,99,235,0.12);">
+        <p class="text-xs mb-1" style="color:#93C5FD;font-family:'DM Sans',sans-serif;">Total Cost</p>
+        <p class="font-display font-bold text-white text-lg">${{ r.total_cost|floatformat:2 }}</p>
+      </div>
+    </div>
+    {% if r.notes %}<p class="text-xs rounded-xl p-3" style="color:#94A3B8;background:rgba(255,255,255,0.03);font-family:'DM Sans',sans-serif;">{{ r.notes }}</p>{% endif %}
+    <p class="text-xs mt-3" style="color:#334155;font-family:'DM Sans',sans-serif;">Booked {{ r.created_at|date:"M d, Y" }}</p>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="rounded-2xl p-16 card-dark text-center">
+  <svg class="w-14 h-14 mx-auto mb-5" style="color:#1E293B;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+  <p class="text-white font-display font-bold text-xl mb-2">No Rentals Yet</p>
+  <p class="text-sm mb-6" style="color:#64748B;font-family:'DM Sans',sans-serif;">Browse our catalog and rent your first piece of equipment</p>
+  <a href="{% url 'equipment_list' %}" class="btn-blue px-8 py-3.5 text-sm">Browse Equipment</a>
+</div>
+{% endif %}
+{% endblock %}

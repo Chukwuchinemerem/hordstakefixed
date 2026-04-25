@@ -1,0 +1,124 @@
+{% extends 'core/base.html' %}
+{% block body_class %}text-white{% endblock %}
+{% block body %}
+<div class="flex h-screen overflow-hidden" style="background:#0F172A;">
+<!-- Mobile Overlay -->
+<div id="admin-overlay" class="fixed inset-0 z-40 hidden lg:hidden" style="background:rgba(0,0,0,0.7);" onclick="closeAdminSidebar()"></div>
+
+<!-- ══════════ ADMIN SIDEBAR ══════════ -->
+<aside id="admin-sidebar" class="sidebar-panel w-72 flex flex-col h-full overflow-y-auto flex-shrink-0" style="background:#080F1A;border-right:1px solid rgba(255,255,255,0.06);">
+  <!-- Logo -->
+  <div class="px-6 py-5 flex items-center justify-between" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+    <a href="/" class="flex items-center gap-2.5 font-display font-bold text-xl tracking-tight text-white" style="text-decoration:none;">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#2563EB;"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+      HORDSTAKE
+    </a>
+    <span class="text-xs font-bold px-2 py-1 rounded-md" style="background:rgba(37,99,235,0.2);color:#93C5FD;font-family:'DM Sans',sans-serif;">ADMIN</span>
+  </div>
+
+  <!-- Admin Profile -->
+  <div class="px-5 py-4" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full flex items-center justify-center font-display font-bold text-sm flex-shrink-0" style="background:#7C3AED;color:#DDD6FE;">{{ request.user.username|first|upper }}</div>
+      <div class="min-w-0">
+        <p class="text-white text-sm font-semibold truncate" style="font-family:'DM Sans',sans-serif;">{{ request.user.username }}</p>
+        <p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">Super Administrator</p>
+      </div>
+      <div class="ml-auto"><span class="live-dot"></span></div>
+    </div>
+  </div>
+
+  <!-- Admin Nav -->
+  <nav class="flex-1 px-4 py-5 overflow-y-auto">
+    <p class="text-xs font-bold tracking-widest uppercase px-3 mb-3" style="color:#334155;font-family:'DM Sans',sans-serif;">Management</p>
+
+    <a href="{% url 'admin_dashboard' %}" class="sidebar-link {% block a_dash %}{% endblock %}">
+      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      Dashboard
+    </a>
+    <a href="{% url 'admin_users' %}" class="sidebar-link {% block a_users %}{% endblock %}">
+      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+      Users
+    </a>
+    <a href="{% url 'admin_rentals' %}" class="sidebar-link {% block a_rentals %}{% endblock %}">
+      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+      Rentals
+    </a>
+    <a href="{% url 'admin_equipment' %}" class="sidebar-link {% block a_equip %}{% endblock %}">
+      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+      Equipment
+    </a>
+
+    <p class="text-xs font-bold tracking-widest uppercase px-3 mb-3 mt-6" style="color:#334155;font-family:'DM Sans',sans-serif;">Finance</p>
+
+    <a href="{% url 'admin_add_funds' %}" class="sidebar-link {% block a_funds %}{% endblock %}">
+      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      Add Funds
+    </a>
+    <a href="{% url 'admin_transactions' %}" class="sidebar-link {% block a_txns %}{% endblock %}">
+      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      Transactions
+    </a>
+    <a href="{% url 'admin_wallet_settings' %}" class="sidebar-link {% block a_wallet %}{% endblock %}">
+      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+      Wallet Settings
+    </a>
+
+    <p class="text-xs font-bold tracking-widest uppercase px-3 mb-3 mt-6" style="color:#334155;font-family:'DM Sans',sans-serif;">Communication</p>
+
+    <a href="{% url 'admin_notifications' %}" class="sidebar-link {% block a_notifs %}{% endblock %}">
+      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+      Notifications
+    </a>
+  </nav>
+
+  <!-- Logout -->
+  <div class="px-4 py-4" style="border-top:1px solid rgba(255,255,255,0.06);">
+    <a href="{% url 'logout' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-red-500/10 transition-all" style="color:#64748B;font-family:'DM Sans',sans-serif;text-decoration:none;">
+      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      Sign Out
+    </a>
+  </div>
+</aside>
+
+<!-- ══════════ MAIN CONTENT ══════════ -->
+<div class="flex-1 flex flex-col overflow-hidden">
+  <!-- Top Bar -->
+  <header class="flex-shrink-0 flex items-center justify-between px-4 sm:px-8 h-16" style="background:#0F172A;border-bottom:1px solid rgba(255,255,255,0.06);">
+    <div class="flex items-center gap-4">
+      <button onclick="toggleAdminSidebar()" class="lg:hidden p-2 rounded-lg hover:bg-white/5" style="color:#64748B;">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <div>
+        <h1 class="text-white font-display font-bold text-xl">{% block page_title %}Admin{% endblock %}</h1>
+        <p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">{% block page_subtitle %}Hordstake Control Panel{% endblock %}</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="/" class="w-9 h-9 rounded-lg hidden sm:flex items-center justify-center hover:bg-white/8 transition-colors" style="color:#64748B;" title="View Site">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <main class="flex-1 overflow-y-auto p-4 sm:p-8" style="background:#0F172A;">
+    {% if messages %}
+    <div class="mb-6 space-y-2">
+      {% for message in messages %}
+      <div class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium" style="font-family:'DM Sans',sans-serif;{% if message.tags == 'error' %}background:rgba(239,68,68,0.1);color:#FCA5A5;border:1px solid rgba(239,68,68,0.2){% elif message.tags == 'success' %}background:rgba(34,197,94,0.1);color:#86EFAC;border:1px solid rgba(34,197,94,0.2){% else %}background:rgba(37,99,235,0.1);color:#93C5FD;border:1px solid rgba(37,99,235,0.2){% endif %}">
+        <span>{% if message.tags == 'error' %}✕{% elif message.tags == 'success' %}✓{% else %}ℹ{% endif %}</span>
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+</div>
+<script>
+function toggleAdminSidebar(){document.getElementById('admin-sidebar').classList.toggle('open');document.getElementById('admin-overlay').classList.toggle('hidden');}
+function closeAdminSidebar(){document.getElementById('admin-sidebar').classList.remove('open');document.getElementById('admin-overlay').classList.add('hidden');}
+</script>
+{% endblock %}

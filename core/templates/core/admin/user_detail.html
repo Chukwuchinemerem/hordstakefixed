@@ -1,0 +1,57 @@
+{% extends 'core/admin/admin_base.html' %}
+{% block page_title %}User: {{ viewed_user.username }}{% endblock %}
+{% block page_subtitle %}Full account details and history{% endblock %}
+{% block a_users %}active{% endblock %}
+{% block content %}
+<div class="mb-4"><a href="{% url 'admin_users' %}" class="text-sm hover:text-white" style="color:#2563EB;font-family:'DM Sans',sans-serif;text-decoration:none;">← Back to Users</a></div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+  <div class="rounded-2xl p-6 card-dark col-span-2">
+    <div class="flex items-center gap-4 mb-5">
+      <div class="w-14 h-14 rounded-full flex items-center justify-center font-display font-bold text-xl" style="background:#1E3A8A;color:#93C5FD;">{{ viewed_user.username|first|upper }}</div>
+      <div><h2 class="font-display font-bold text-white text-2xl">{{ viewed_user.username }}</h2><p style="color:#64748B;font-family:'DM Sans',sans-serif;font-size:0.875rem;">{{ viewed_user.email }}</p></div>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div class="rounded-xl p-3" style="background:rgba(255,255,255,0.04);"><p class="text-xs mb-1" style="color:#64748B;font-family:'DM Sans',sans-serif;">Balance</p><p class="font-display font-bold text-white">${{ profile.balance|floatformat:2 }}</p></div>
+      <div class="rounded-xl p-3" style="background:rgba(255,255,255,0.04);"><p class="text-xs mb-1" style="color:#64748B;font-family:'DM Sans',sans-serif;">Referral Bonus</p><p class="font-display font-bold text-white">${{ profile.referral_bonus|floatformat:2 }}</p></div>
+      <div class="rounded-xl p-3" style="background:rgba(255,255,255,0.04);"><p class="text-xs mb-1" style="color:#64748B;font-family:'DM Sans',sans-serif;">Rentals</p><p class="font-display font-bold text-white">{{ rentals.count }}</p></div>
+      <div class="rounded-xl p-3" style="background:rgba(255,255,255,0.04);"><p class="text-xs mb-1" style="color:#64748B;font-family:'DM Sans',sans-serif;">Transactions</p><p class="font-display font-bold text-white">{{ transactions.count }}</p></div>
+    </div>
+  </div>
+  <div class="rounded-2xl p-6 card-dark">
+    <h3 class="font-display font-bold text-white text-lg mb-4">Quick Actions</h3>
+    <div class="space-y-2">
+      <a href="{% url 'admin_add_funds' %}?user={{ viewed_user.pk }}" class="btn-blue w-full py-2.5 text-sm">Add Funds</a>
+      <a href="{% url 'admin_notifications' %}?user={{ viewed_user.pk }}" class="btn-outline w-full py-2.5 text-sm" style="border-color:rgba(255,255,255,0.12);color:#94A3B8;">Send Notification</a>
+    </div>
+    <div class="mt-4 pt-4" style="border-top:1px solid rgba(255,255,255,0.06);">
+      <p class="text-xs mb-1" style="color:#64748B;font-family:'DM Sans',sans-serif;">Referral Code</p>
+      <code class="text-sm text-blue-300" style="font-family:monospace;">{{ profile.referral_code }}</code>
+      <p class="text-xs mt-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">Joined {{ viewed_user.date_joined|date:"M d, Y" }}</p>
+    </div>
+  </div>
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+  <div class="rounded-2xl p-6 card-dark">
+    <h3 class="font-display font-bold text-white text-lg mb-4">Transactions</h3>
+    <div class="space-y-2 max-h-80 overflow-y-auto">
+      {% for txn in transactions %}
+      <div class="flex items-center justify-between p-3 rounded-xl" style="background:rgba(255,255,255,0.04);">
+        <div><p class="text-white text-sm font-semibold capitalize" style="font-family:'DM Sans',sans-serif;">{{ txn.transaction_type|title }}</p><p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ txn.created_at|date:"M d, Y" }}</p></div>
+        <div class="text-right"><p class="text-white font-bold font-display">${{ txn.amount|floatformat:2 }}</p><span class="{% if txn.status == 'confirmed' %}badge-success{% elif txn.status == 'pending' %}badge-pending{% else %}badge-error{% endif %}">{{ txn.status }}</span></div>
+      </div>
+      {% empty %}<p class="text-sm py-4 text-center" style="color:#64748B;font-family:'DM Sans',sans-serif;">No transactions.</p>{% endfor %}
+    </div>
+  </div>
+  <div class="rounded-2xl p-6 card-dark">
+    <h3 class="font-display font-bold text-white text-lg mb-4">Rentals</h3>
+    <div class="space-y-2 max-h-80 overflow-y-auto">
+      {% for r in rentals %}
+      <div class="flex items-center justify-between p-3 rounded-xl" style="background:rgba(255,255,255,0.04);">
+        <div><p class="text-white text-sm font-semibold" style="font-family:'DM Sans',sans-serif;">{{ r.equipment.name }}</p><p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ r.duration_days }} days · {{ r.start_date|date:"M d" }}</p></div>
+        <div class="text-right"><p class="text-white font-bold font-display">${{ r.total_cost|floatformat:2 }}</p><span class="{% if r.status == 'active' %}badge-success{% elif r.status == 'pending' %}badge-pending{% else %}badge-blue{% endif %}">{{ r.status|title }}</span></div>
+      </div>
+      {% empty %}<p class="text-sm py-4 text-center" style="color:#64748B;font-family:'DM Sans',sans-serif;">No rentals.</p>{% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

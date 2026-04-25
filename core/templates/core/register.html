@@ -1,0 +1,70 @@
+{% extends 'core/base.html' %}
+{% block title %}Create Account — Hordstake{% endblock %}
+{% block body_class %}text-white{% endblock %}
+{% block body %}
+<div class="min-h-screen flex" style="background:#0F172A;">
+  <div class="hidden lg:flex lg:w-5/12 flex-col justify-between p-12" style="background:linear-gradient(135deg,#0A1F44 0%,#1E3A8A 100%);">
+    <a href="/" class="flex items-center gap-2.5 font-display font-bold text-xl text-white" style="text-decoration:none;">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#2563EB;"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+      HORDSTAKE
+    </a>
+    <div>
+      <h2 class="font-display text-4xl font-bold text-white mb-4">Join 500+<br>Companies Worldwide</h2>
+      <p class="text-blue-200 text-base leading-relaxed mb-6" style="font-family:'DM Sans',sans-serif;">Get instant access to premium oil & gas equipment, investment plans with up to 24% ROI, and 24/7 expert support.</p>
+      <ul class="space-y-3">
+        {% for f in reg_features %}
+        <li class="flex items-center gap-3 text-sm text-blue-100" style="font-family:'DM Sans',sans-serif;"><span class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold" style="background:rgba(34,197,94,0.2);color:#22C55E;">✓</span>{{ f }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <p class="text-blue-400 text-xs" style="font-family:'DM Sans',sans-serif;">© 2025 Hordstake. All rights reserved.</p>
+  </div>
+  <div class="flex-1 flex items-center justify-center p-6 sm:p-10" style="background:#0F172A;overflow-y:auto;">
+    <div class="w-full max-w-md py-8">
+      <a href="/" class="lg:hidden flex items-center gap-2.5 font-display font-bold text-xl text-white mb-8" style="text-decoration:none;">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#2563EB;"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+        HORDSTAKE
+      </a>
+      <h1 class="font-display text-3xl font-bold text-white mb-2">Create your account</h1>
+      <p class="text-sm mb-8" style="color:#64748B;font-family:'DM Sans',sans-serif;">Start renting equipment or investing in 2 minutes</p>
+
+      {% if messages %}
+      <div class="mb-5 space-y-2">{% for m in messages %}<div class="px-4 py-3 rounded-xl text-sm" style="background:rgba(239,68,68,0.1);color:#FCA5A5;border:1px solid rgba(239,68,68,0.2);font-family:'DM Sans',sans-serif;">{{ m }}</div>{% endfor %}</div>
+      {% endif %}
+
+      <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold tracking-widest mb-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">USERNAME</label>
+            <input type="text" name="username" required class="input-dark" placeholder="johndoe"/>
+          </div>
+          <div>
+            <label class="block text-xs font-bold tracking-widest mb-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">EMAIL</label>
+            <input type="email" name="email" required class="input-dark" placeholder="john@company.com"/>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold tracking-widest mb-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">PASSWORD</label>
+          <input type="password" name="password" required minlength="8" class="input-dark" placeholder="Min 8 characters"/>
+        </div>
+        <div>
+          <label class="block text-xs font-bold tracking-widest mb-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">CONFIRM PASSWORD</label>
+          <input type="password" name="confirm_password" required class="input-dark" placeholder="Repeat password"/>
+        </div>
+        <div>
+          <label class="block text-xs font-bold tracking-widest mb-2" style="color:#64748B;font-family:'DM Sans',sans-serif;">REFERRAL CODE (OPTIONAL)</label>
+          <input type="text" name="referral_code" value="{{ ref_code }}" class="input-dark" placeholder="Enter referral code for $50 bonus"/>
+        </div>
+        <div class="rounded-xl p-3 flex gap-3" style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.15);">
+          <svg class="w-4 h-4 flex-shrink-0 mt-0.5" style="color:#22C55E;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <p class="text-xs" style="color:#86EFAC;font-family:'DM Sans',sans-serif;">Have a referral code? Enter it above to earn a $50 welcome bonus for you and your referrer.</p>
+        </div>
+        <button type="submit" class="btn-blue w-full py-4 text-sm">Create Free Account</button>
+        <p class="text-center text-xs" style="color:#334155;font-family:'DM Sans',sans-serif;">By registering you agree to our Terms of Service and Privacy Policy.</p>
+      </form>
+      <p class="text-center mt-5 text-sm" style="color:#64748B;font-family:'DM Sans',sans-serif;">Already have an account? <a href="{% url 'login' %}" class="font-semibold hover:text-white" style="color:#2563EB;text-decoration:none;">Sign In</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

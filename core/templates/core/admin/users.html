@@ -1,0 +1,43 @@
+{% extends 'core/admin/admin_base.html' %}
+{% block page_title %}Users{% endblock %}
+{% block page_subtitle %}All registered users and their details{% endblock %}
+{% block a_users %}active{% endblock %}
+{% block content %}
+<div class="rounded-2xl p-6 card-dark">
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+    <div class="flex items-center gap-3"><h3 class="font-display font-bold text-white text-xl">All Users</h3><span class="badge-blue">{{ users.count }}</span></div>
+    <a href="{% url 'admin_add_funds' %}" class="btn-blue px-5 py-2.5 text-sm">+ Add Funds to User</a>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full" style="min-width:700px;">
+      <thead><tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">User</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Email</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Balance</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Rentals</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Joined</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Actions</th>
+      </tr></thead>
+      <tbody>
+        {% for u in users %}
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+          <td class="py-3.5 pr-4">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center font-display font-bold text-xs flex-shrink-0" style="background:#1E3A8A;color:#93C5FD;">{{ u.username|first|upper }}</div>
+              <div><p class="text-white text-sm font-semibold" style="font-family:'DM Sans',sans-serif;">{{ u.username }}</p>{% if u.is_staff %}<span class="badge-blue">Staff</span>{% endif %}</div>
+            </div>
+          </td>
+          <td class="py-3.5 pr-4 text-sm" style="color:#94A3B8;font-family:'DM Sans',sans-serif;">{{ u.email }}</td>
+          <td class="py-3.5 pr-4"><span class="font-display font-bold text-white">${{ u.profile.balance|default:"0.00"|floatformat:2 }}</span></td>
+          <td class="py-3.5 pr-4 text-sm" style="color:#94A3B8;font-family:'DM Sans',sans-serif;">{{ u.rentals.count }}</td>
+          <td class="py-3.5 pr-4 text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ u.date_joined|date:"M d, Y" }}</td>
+          <td class="py-3.5"><a href="{% url 'admin_user_detail' u.pk %}" class="btn-blue px-3 py-1.5 text-xs">View</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="py-10 text-center text-sm" style="color:#64748B;font-family:'DM Sans',sans-serif;">No users registered yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

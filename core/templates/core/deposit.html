@@ -1,0 +1,369 @@
+{% extends 'core/dashboard_base.html' %}
+{% block page_title %}Deposit Funds
+<!-- Bank Support Modal -->
+<div id="bank-support-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.75);">
+  <div class="w-full max-w-md rounded-2xl overflow-hidden" style="box-shadow:0 32px 80px rgba(0,0,0,0.5);">
+    <div class="px-8 py-7" style="background:linear-gradient(135deg,#0A1F44,#1E3A8A);">
+      <h3 class="font-display font-bold text-white text-2xl mb-1">Bank Wire Transfer</h3>
+      <p class="text-blue-200 text-sm" style="font-family:DM Sans,sans-serif;">Selected bank: <strong id="bank-name-display"></strong></p>
+    </div>
+    <div class="px-8 py-6" style="background:#1E293B;">
+      <p class="text-sm mb-5 leading-relaxed" style="color:#94A3B8;font-family:DM Sans,sans-serif;">
+        To receive your bank wire transfer details, please contact our support team directly. A representative will provide you with the complete wire transfer information for your selected bank securely and quickly.
+      </p>
+      <div class="space-y-3 mb-5">
+        <button onclick="openSmartsupp(document.getElementById('bank-name-display').textContent)" class="btn-blue w-full py-3.5 text-sm flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          Contact via Live Chat
+        </button>
+        <button onclick="openWhatsApp(document.getElementById('bank-name-display').textContent)" class="w-full py-3.5 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-all hover:opacity-90" style="background:#25D366;color:#fff;font-family:DM Sans,sans-serif;">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a9.87 9.87 0 00-5.031 1.378l-.361.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 012.15 11.89C2.151 6.44 6.587 2.006 12.04 2.006c2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+          Contact via WhatsApp
+        </button>
+      </div>
+      <div class="rounded-xl p-4 flex gap-3 mb-4" style="background:rgba(234,179,8,0.07);border:1px solid rgba(234,179,8,0.2);">
+        <svg class="w-5 h-5 flex-shrink-0" style="color:#EAB308;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <p class="text-xs" style="color:#FDE68A;font-family:DM Sans,sans-serif;">Never share bank details via email. Our team will only provide wire details through our secure live chat or WhatsApp.</p>
+      </div>
+      <button onclick="closeBankModal()" class="w-full py-3 text-sm font-semibold rounded-xl" style="background:rgba(255,255,255,0.06);color:#94A3B8;font-family:DM Sans,sans-serif;">Close</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block page_subtitle %}Add funds via cryptocurrency or bank wire transfer
+<!-- Bank Support Modal -->
+<div id="bank-support-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.75);">
+  <div class="w-full max-w-md rounded-2xl overflow-hidden" style="box-shadow:0 32px 80px rgba(0,0,0,0.5);">
+    <div class="px-8 py-7" style="background:linear-gradient(135deg,#0A1F44,#1E3A8A);">
+      <h3 class="font-display font-bold text-white text-2xl mb-1">Bank Wire Transfer</h3>
+      <p class="text-blue-200 text-sm" style="font-family:DM Sans,sans-serif;">Selected bank: <strong id="bank-name-display"></strong></p>
+    </div>
+    <div class="px-8 py-6" style="background:#1E293B;">
+      <p class="text-sm mb-5 leading-relaxed" style="color:#94A3B8;font-family:DM Sans,sans-serif;">
+        To receive your bank wire transfer details, please contact our support team directly. A representative will provide you with the complete wire transfer information for your selected bank securely and quickly.
+      </p>
+      <div class="space-y-3 mb-5">
+        <button onclick="openSmartsupp(document.getElementById('bank-name-display').textContent)" class="btn-blue w-full py-3.5 text-sm flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          Contact via Live Chat
+        </button>
+        <button onclick="openWhatsApp(document.getElementById('bank-name-display').textContent)" class="w-full py-3.5 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-all hover:opacity-90" style="background:#25D366;color:#fff;font-family:DM Sans,sans-serif;">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a9.87 9.87 0 00-5.031 1.378l-.361.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 012.15 11.89C2.151 6.44 6.587 2.006 12.04 2.006c2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+          Contact via WhatsApp
+        </button>
+      </div>
+      <div class="rounded-xl p-4 flex gap-3 mb-4" style="background:rgba(234,179,8,0.07);border:1px solid rgba(234,179,8,0.2);">
+        <svg class="w-5 h-5 flex-shrink-0" style="color:#EAB308;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <p class="text-xs" style="color:#FDE68A;font-family:DM Sans,sans-serif;">Never share bank details via email. Our team will only provide wire details through our secure live chat or WhatsApp.</p>
+      </div>
+      <button onclick="closeBankModal()" class="w-full py-3 text-sm font-semibold rounded-xl" style="background:rgba(255,255,255,0.06);color:#94A3B8;font-family:DM Sans,sans-serif;">Close</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'dashboard' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Overview</a>
+<a href="{% url 'my_rentals' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>My Rentals</a>
+<a href="{% url 'deposit' %}" class="sidebar-link active"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>Deposit</a>
+<a href="{% url 'withdraw' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Withdraw</a>
+<a href="{% url 'transactions' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Transactions</a>
+
+<!-- Bank Support Modal -->
+<div id="bank-support-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.75);">
+  <div class="w-full max-w-md rounded-2xl overflow-hidden" style="box-shadow:0 32px 80px rgba(0,0,0,0.5);">
+    <div class="px-8 py-7" style="background:linear-gradient(135deg,#0A1F44,#1E3A8A);">
+      <h3 class="font-display font-bold text-white text-2xl mb-1">Bank Wire Transfer</h3>
+      <p class="text-blue-200 text-sm" style="font-family:DM Sans,sans-serif;">Selected bank: <strong id="bank-name-display"></strong></p>
+    </div>
+    <div class="px-8 py-6" style="background:#1E293B;">
+      <p class="text-sm mb-5 leading-relaxed" style="color:#94A3B8;font-family:DM Sans,sans-serif;">
+        To receive your bank wire transfer details, please contact our support team directly. A representative will provide you with the complete wire transfer information for your selected bank securely and quickly.
+      </p>
+      <div class="space-y-3 mb-5">
+        <button onclick="openSmartsupp(document.getElementById('bank-name-display').textContent)" class="btn-blue w-full py-3.5 text-sm flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          Contact via Live Chat
+        </button>
+        <button onclick="openWhatsApp(document.getElementById('bank-name-display').textContent)" class="w-full py-3.5 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-all hover:opacity-90" style="background:#25D366;color:#fff;font-family:DM Sans,sans-serif;">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a9.87 9.87 0 00-5.031 1.378l-.361.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 012.15 11.89C2.151 6.44 6.587 2.006 12.04 2.006c2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+          Contact via WhatsApp
+        </button>
+      </div>
+      <div class="rounded-xl p-4 flex gap-3 mb-4" style="background:rgba(234,179,8,0.07);border:1px solid rgba(234,179,8,0.2);">
+        <svg class="w-5 h-5 flex-shrink-0" style="color:#EAB308;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <p class="text-xs" style="color:#FDE68A;font-family:DM Sans,sans-serif;">Never share bank details via email. Our team will only provide wire details through our secure live chat or WhatsApp.</p>
+      </div>
+      <button onclick="closeBankModal()" class="w-full py-3 text-sm font-semibold rounded-xl" style="background:rgba(255,255,255,0.06);color:#94A3B8;font-family:DM Sans,sans-serif;">Close</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+
+  <!-- Balance Banner -->
+  <div class="rounded-2xl p-6 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4" style="background:linear-gradient(135deg,#1E3A8A 0%,#2563EB 100%);">
+    <div>
+      <p class="text-blue-200 text-xs font-bold tracking-widest mb-1" style="font-family:'DM Sans',sans-serif;">CURRENT BALANCE</p>
+      <div class="font-display text-4xl font-bold text-white">${{ profile.balance|floatformat:2 }}</div>
+    </div>
+    <div class="text-right">
+      <p class="text-blue-200 text-xs mb-1" style="font-family:'DM Sans',sans-serif;">Referral Bonus</p>
+      <div class="font-display text-2xl font-bold text-white">${{ profile.referral_bonus|floatformat:2 }}</div>
+    </div>
+  </div>
+
+  <!-- PAYMENT METHOD SELECTOR -->
+  <div class="rounded-2xl p-6 mb-6 card-dark">
+    <h3 class="font-display font-bold text-white text-xl mb-6">Select Payment Method</h3>
+    <div class="grid grid-cols-2 gap-3 mb-6">
+      <button onclick="showMethod('crypto')" id="tab-crypto" class="method-tab active-method flex items-center justify-center gap-3 p-4 rounded-xl font-semibold text-sm transition-all" style="font-family:'DM Sans',sans-serif;">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/></svg>
+        Cryptocurrency
+      </button>
+      <button onclick="showMethod('bank')" id="tab-bank" class="method-tab flex items-center justify-center gap-3 p-4 rounded-xl font-semibold text-sm transition-all" style="font-family:'DM Sans',sans-serif;">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+        Bank Wire Transfer
+      </button>
+    </div>
+
+    <!-- ══════ CRYPTO PANEL ══════ -->
+    <div id="panel-crypto">
+      <h4 class="text-white font-semibold mb-4" style="font-family:'DM Sans',sans-serif;">Choose Cryptocurrency</h4>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6" id="crypto-cards">
+        {% for wallet in wallets %}
+        <div class="crypto-card cursor-pointer rounded-xl p-4 border-2 border-transparent transition-all flex flex-col items-center gap-3 hover:border-blue-500"
+             style="background:rgba(255,255,255,0.05);"
+             data-crypto="{{ wallet.crypto }}" data-address="{{ wallet.address }}" data-network="{{ wallet.network }}"
+             onclick="selectCrypto(this)">
+          <!-- Crypto SVG Icons -->
+          {% if wallet.crypto == 'BTC' %}
+          <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background:#F7931A;">
+            <svg viewBox="0 0 24 24" class="w-6 h-6 text-white" fill="currentColor"><path d="M23.638 14.904c-1.602 6.43-8.113 10.34-14.542 8.736C2.67 22.05-1.244 15.525.362 9.105 1.962 2.67 8.475-1.243 14.9.358c6.43 1.605 10.342 8.115 8.738 14.548v-.002zm-6.35-4.613c.24-1.59-.974-2.45-2.64-3.03l.54-2.153-1.315-.33-.525 2.107c-.345-.087-.705-.167-1.064-.25l.526-2.127-1.32-.33-.54 2.165c-.285-.067-.565-.132-.84-.2l-1.815-.45-.35 1.407s.975.225.955.236c.535.136.63.486.615.766l-1.477 5.92c-.075.166-.24.406-.614.314.015.02-.96-.24-.96-.24l-.66 1.51 1.71.426.93.242-.54 2.19 1.32.327.54-2.17c.36.1.705.19 1.05.273l-.51 2.154 1.32.33.545-2.nineteen c2.24.427 3.93.257 4.64-1.774.57-1.637-.03-2.58-1.217-3.196.854-.193 1.5-.76 1.68-1.93h.01zm-3.01 4.22c-.404 1.64-3.157.75-4.05.53l.72-2.9c.896.23 3.757.67 3.33 2.37zm.41-4.24c-.37 1.49-2.662.735-3.405.55l.654-2.64c.744.18 3.137.524 2.75 2.084v.006z"/></svg>
+          </div>
+          <div class="text-center"><p class="text-white text-sm font-bold" style="font-family:'DM Sans',sans-serif;">Bitcoin</p><p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">BTC · {{ wallet.network }}</p></div>
+          {% elif wallet.crypto == 'ETH' %}
+          <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background:#627EEA;">
+            <svg viewBox="0 0 24 24" class="w-5 h-5 text-white" fill="currentColor"><path d="M11.944 17.97L4.58 13.62 11.943 24l7.37-10.38-7.372 4.35h.003zM12.056 0L4.69 12.223l7.365 4.354 7.365-4.35L12.056 0z"/></svg>
+          </div>
+          <div class="text-center"><p class="text-white text-sm font-bold" style="font-family:'DM Sans',sans-serif;">Ethereum</p><p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">ETH · {{ wallet.network }}</p></div>
+          {% elif wallet.crypto == 'USDT' %}
+          <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background:#26A17B;">
+            <svg viewBox="0 0 24 24" class="w-6 h-6 text-white" fill="currentColor"><path d="M12 0C5.374 0 0 5.374 0 12s5.374 12 12 12 12-5.374 12-12S18.626 0 12 0zm5.92 7.16H6.08v1.55h4.57v1.54H6.08v1.54h4.57v5.5h2.7v-5.5h4.57V10.25h-4.57V8.71h4.57V7.16z"/></svg>
+          </div>
+          <div class="text-center"><p class="text-white text-sm font-bold" style="font-family:'DM Sans',sans-serif;">Tether</p><p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">USDT · {{ wallet.network }}</p></div>
+          {% elif wallet.crypto == 'SOL' %}
+          <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,#9945FF,#14F195);">
+            <svg viewBox="0 0 24 24" class="w-5 h-5 text-white" fill="currentColor"><path d="M17.938 7.467H7.047a.628.628 0 00-.443.186L4.23 10.028a.61.61 0 00.443 1.039h10.891a.628.628 0 00.443-.186l2.374-2.374a.61.61 0 00-.443-1.04zm0 5.466H7.047a.628.628 0 00-.443.186l-2.374 2.374a.61.61 0 00.443 1.04h10.891a.628.628 0 00.443-.186l2.374-2.374a.61.61 0 00-.443-1.04zm-10.891-2.7h10.891a.628.628 0 00.443-.186l2.374-2.374a.61.61 0 00-.443-1.04H9.421a.628.628 0 00-.443.186L6.604 9.193a.61.61 0 00.443 1.04z"/></svg>
+          </div>
+          <div class="text-center"><p class="text-white text-sm font-bold" style="font-family:'DM Sans',sans-serif;">Solana</p><p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">SOL · {{ wallet.network }}</p></div>
+          {% endif %}
+        </div>
+        {% endfor %}
+        {% if not wallets %}
+        <div class="col-span-4 text-center py-8" style="color:#64748B;font-family:'DM Sans',sans-serif;">No wallet addresses configured yet. Please contact support.</div>
+        {% endif %}
+      </div>
+
+      <!-- Selected Wallet Address Display -->
+      <div id="wallet-address-box" class="hidden mb-6 rounded-xl p-5" style="background:rgba(37,99,235,0.08);border:1.5px solid rgba(37,99,235,0.2);">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-sm font-semibold text-white" style="font-family:'DM Sans',sans-serif;">Deposit Address (<span id="selected-crypto-name"></span>)</p>
+          <span class="badge-blue text-xs" id="selected-network"></span>
+        </div>
+        <div class="flex items-center gap-3">
+          <code id="wallet-address-text" class="flex-1 text-sm break-all rounded-lg px-3 py-2.5" style="background:rgba(255,255,255,0.06);color:#93C5FD;font-family:monospace;"></code>
+          <button onclick="copyAddr()" class="flex-shrink-0 btn-blue px-4 py-2.5 text-sm" id="copy-btn">Copy</button>
+        </div>
+        <p class="text-xs mt-3" style="color:#64748B;font-family:'DM Sans',sans-serif;">⚠️ Only send the selected cryptocurrency to this address. Sending wrong assets will result in permanent loss.</p>
+      </div>
+
+      <!-- Crypto Deposit Form -->
+      {% if wallets %}
+      <form method="post" action="{% url 'deposit' %}" class="space-y-4">
+        {% csrf_token %}
+        <input type="hidden" name="payment_method" value="crypto"/>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold tracking-wide mb-2" style="color:#94A3B8;font-family:'DM Sans',sans-serif;">DEPOSIT AMOUNT (USD)</label>
+            <input type="number" name="amount" step="0.01" min="10" required placeholder="e.g. 500.00" class="input-dark"/>
+          </div>
+          <div>
+            <label class="block text-xs font-bold tracking-wide mb-2" style="color:#94A3B8;font-family:'DM Sans',sans-serif;">CRYPTOCURRENCY</label>
+            <select name="crypto" id="crypto-select" required class="input-dark">
+              <option value="">Select after choosing above...</option>
+              {% for wallet in wallets %}<option value="{{ wallet.crypto }}">{{ wallet.get_crypto_display }}</option>{% endfor %}
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold tracking-wide mb-2" style="color:#94A3B8;font-family:'DM Sans',sans-serif;">TRANSACTION HASH (OPTIONAL)</label>
+          <input type="text" name="tx_hash" placeholder="Paste your blockchain transaction hash here" class="input-dark"/>
+          <p class="text-xs mt-1.5" style="color:#334155;font-family:'DM Sans',sans-serif;">Providing a TX hash speeds up admin confirmation.</p>
+        </div>
+        <div class="rounded-xl p-4 flex gap-3" style="background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.15);">
+          <svg class="w-5 h-5 flex-shrink-0 mt-0.5" style="color:#3B82F6;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <div class="text-xs" style="color:#93C5FD;font-family:'DM Sans',sans-serif;">
+            <strong>How it works:</strong> Select a crypto above → Copy the wallet address → Send exact amount → Submit this form with TX hash → Admin confirms (usually 15–60 mins) → Balance updates instantly.
+          </div>
+        </div>
+        <button type="submit" class="btn-blue w-full py-4 text-sm">Submit Crypto Deposit</button>
+      </form>
+      {% endif %}
+    </div>
+
+    <!-- ══════ BANK WIRE PANEL ══════ -->
+    <div id="panel-bank" class="hidden">
+      <h4 class="text-white font-semibold mb-2" style="font-family:'DM Sans',sans-serif;">Select Your Bank</h4>
+      <p class="text-xs mb-5" style="color:#64748B;font-family:'DM Sans',sans-serif;">Select a bank to initiate wire transfer. You'll be connected to our support team who will provide the full bank details securely.</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <!-- Bank of America -->
+        <button onclick="openBankSupport('Bank of America')" class="bank-card group flex items-center gap-4 p-4 rounded-xl border-2 border-transparent hover:border-blue-500 transition-all text-left" style="background:rgba(255,255,255,0.05);">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 font-display font-bold text-sm" style="background:#E31837;color:#fff;">BoA</div>
+          <div><p class="text-white text-sm font-semibold" style="font-family:'DM Sans',sans-serif;">Bank of America</p><p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">Wire Transfer · ACH Available</p></div>
+          <svg class="w-4 h-4 ml-auto group-hover:translate-x-1 transition-transform" style="color:#2563EB;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+
+        <!-- JPMorgan Chase -->
+        <button onclick="openBankSupport('JPMorgan Chase')" class="bank-card group flex items-center gap-4 p-4 rounded-xl border-2 border-transparent hover:border-blue-500 transition-all text-left" style="background:rgba(255,255,255,0.05);">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 font-display font-bold text-sm" style="background:#117ACA;color:#fff;">JPM</div>
+          <div><p class="text-white text-sm font-semibold" style="font-family:'DM Sans',sans-serif;">JPMorgan Chase</p><p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">Wire Transfer · International</p></div>
+          <svg class="w-4 h-4 ml-auto group-hover:translate-x-1 transition-transform" style="color:#2563EB;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+
+        <!-- Wells Fargo -->
+        <button onclick="openBankSupport('Wells Fargo')" class="bank-card group flex items-center gap-4 p-4 rounded-xl border-2 border-transparent hover:border-blue-500 transition-all text-left" style="background:rgba(255,255,255,0.05);">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 font-display font-bold text-sm" style="background:#D71E28;color:#fff;">WF</div>
+          <div><p class="text-white text-sm font-semibold" style="font-family:'DM Sans',sans-serif;">Wells Fargo</p><p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">Wire Transfer · Same-Day</p></div>
+          <svg class="w-4 h-4 ml-auto group-hover:translate-x-1 transition-transform" style="color:#2563EB;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+
+        <!-- Citibank -->
+        <button onclick="openBankSupport('Citibank')" class="bank-card group flex items-center gap-4 p-4 rounded-xl border-2 border-transparent hover:border-blue-500 transition-all text-left" style="background:rgba(255,255,255,0.05);">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 font-display font-bold text-sm" style="background:#003B95;color:#fff;">CITI</div>
+          <div><p class="text-white text-sm font-semibold" style="font-family:'DM Sans',sans-serif;">Citibank</p><p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">Wire Transfer · SWIFT</p></div>
+          <svg class="w-4 h-4 ml-auto group-hover:translate-x-1 transition-transform" style="color:#2563EB;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+
+        <!-- Goldman Sachs -->
+        <button onclick="openBankSupport('Goldman Sachs')" class="bank-card group flex items-center gap-4 p-4 rounded-xl border-2 border-transparent hover:border-blue-500 transition-all text-left" style="background:rgba(255,255,255,0.05);">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 font-display font-bold text-sm" style="background:#1F2937;color:#9CA3AF;">GS</div>
+          <div><p class="text-white text-sm font-semibold" style="font-family:'DM Sans',sans-serif;">Goldman Sachs</p><p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">Wire Transfer · Premium</p></div>
+          <svg class="w-4 h-4 ml-auto group-hover:translate-x-1 transition-transform" style="color:#2563EB;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+
+        <!-- US Bancorp -->
+        <button onclick="openBankSupport('US Bancorp')" class="bank-card group flex items-center gap-4 p-4 rounded-xl border-2 border-transparent hover:border-blue-500 transition-all text-left" style="background:rgba(255,255,255,0.05);">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 font-display font-bold text-sm" style="background:#0C2340;color:#fff;">USB</div>
+          <div><p class="text-white text-sm font-semibold" style="font-family:'DM Sans',sans-serif;">U.S. Bancorp</p><p class="text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">Wire Transfer · Business</p></div>
+          <svg class="w-4 h-4 ml-auto group-hover:translate-x-1 transition-transform" style="color:#2563EB;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <div class="mt-5 rounded-xl p-4 flex gap-3" style="background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.2);">
+        <svg class="w-5 h-5 flex-shrink-0" style="color:#EAB308;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <p class="text-xs" style="color:#FDE68A;font-family:'DM Sans',sans-serif;">Clicking a bank will open our live chat support where a representative will securely provide the bank wire details for your selected institution. Do NOT share payment details in email.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+.method-tab{background:rgba(255,255,255,0.05);color:#64748B;border:1.5px solid rgba(255,255,255,0.08);}
+.method-tab:hover{background:rgba(255,255,255,0.08);color:#fff;}
+.active-method{background:rgba(37,99,235,0.2) !important;color:#fff !important;border-color:#2563EB !important;}
+.crypto-card.selected{border-color:#2563EB;background:rgba(37,99,235,0.12);}
+</style>
+
+<script>
+// Panel switching
+function showMethod(m) {
+  document.getElementById('panel-crypto').style.display = m === 'crypto' ? '' : 'none';
+  document.getElementById('panel-bank').style.display   = m === 'bank'   ? '' : 'none';
+  document.getElementById('tab-crypto').classList.toggle('active-method', m === 'crypto');
+  document.getElementById('tab-bank').classList.toggle('active-method',   m === 'bank');
+}
+
+// Select crypto
+function selectCrypto(el) {
+  document.querySelectorAll('.crypto-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const crypto = el.dataset.crypto;
+  const address = el.dataset.address;
+  const network = el.dataset.network;
+  document.getElementById('wallet-address-box').classList.remove('hidden');
+  document.getElementById('wallet-address-text').textContent = address;
+  document.getElementById('selected-crypto-name').textContent = crypto;
+  document.getElementById('selected-network').textContent = network;
+  document.getElementById('crypto-select').value = crypto;
+}
+
+// Copy address
+function copyAddr() {
+  const txt = document.getElementById('wallet-address-text').textContent;
+  navigator.clipboard.writeText(txt).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = '✓ Copied!';
+    btn.style.background = '#22C55E';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.background = ''; }, 2500);
+  });
+}
+
+// Bank support chat — redirects to Smartsupp
+function openBankSupport(bankName) {
+  // Show the contact support modal
+  document.getElementById('bank-name-display').textContent = bankName;
+  document.getElementById('bank-support-modal').classList.remove('hidden');
+}
+function closeBankModal() {
+  document.getElementById('bank-support-modal').classList.add('hidden');
+}
+function openWhatsApp(bankName) {
+  const msg = encodeURIComponent('Hello, I want to make a bank wire transfer via ' + bankName + ' for my Hordstake account. Username: {{ request.user.username }} ({{ request.user.email }}). Please provide the wire transfer details.');
+  window.open('https://wa.me/2349121304245?text=' + msg, '_blank');
+}
+// Also open Smartsupp if available
+function openSmartsupp(bankName) {
+  if (window.smartsupp) {
+    smartsupp('chat:open');
+  } else {
+    openWhatsApp(bankName);
+  }
+}
+</script>
+
+
+<!-- Bank Support Modal -->
+<div id="bank-support-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.75);">
+  <div class="w-full max-w-md rounded-2xl overflow-hidden" style="box-shadow:0 32px 80px rgba(0,0,0,0.5);">
+    <div class="px-8 py-7" style="background:linear-gradient(135deg,#0A1F44,#1E3A8A);">
+      <h3 class="font-display font-bold text-white text-2xl mb-1">Bank Wire Transfer</h3>
+      <p class="text-blue-200 text-sm" style="font-family:DM Sans,sans-serif;">Selected bank: <strong id="bank-name-display"></strong></p>
+    </div>
+    <div class="px-8 py-6" style="background:#1E293B;">
+      <p class="text-sm mb-5 leading-relaxed" style="color:#94A3B8;font-family:DM Sans,sans-serif;">
+        To receive your bank wire transfer details, please contact our support team directly. A representative will provide you with the complete wire transfer information for your selected bank securely and quickly.
+      </p>
+      <div class="space-y-3 mb-5">
+        <button onclick="openSmartsupp(document.getElementById('bank-name-display').textContent)" class="btn-blue w-full py-3.5 text-sm flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          Contact via Live Chat
+        </button>
+        <button onclick="openWhatsApp(document.getElementById('bank-name-display').textContent)" class="w-full py-3.5 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-all hover:opacity-90" style="background:#25D366;color:#fff;font-family:DM Sans,sans-serif;">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a9.87 9.87 0 00-5.031 1.378l-.361.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 012.15 11.89C2.151 6.44 6.587 2.006 12.04 2.006c2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+          Contact via WhatsApp
+        </button>
+      </div>
+      <div class="rounded-xl p-4 flex gap-3 mb-4" style="background:rgba(234,179,8,0.07);border:1px solid rgba(234,179,8,0.2);">
+        <svg class="w-5 h-5 flex-shrink-0" style="color:#EAB308;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <p class="text-xs" style="color:#FDE68A;font-family:DM Sans,sans-serif;">Never share bank details via email. Our team will only provide wire details through our secure live chat or WhatsApp.</p>
+      </div>
+      <button onclick="closeBankModal()" class="w-full py-3 text-sm font-semibold rounded-xl" style="background:rgba(255,255,255,0.06);color:#94A3B8;font-family:DM Sans,sans-serif;">Close</button>
+    </div>
+  </div>
+</div>
+{% endblock %}

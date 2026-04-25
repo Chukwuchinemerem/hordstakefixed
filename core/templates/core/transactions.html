@@ -1,0 +1,52 @@
+{% extends 'core/dashboard_base.html' %}
+{% block page_title %}Transactions{% endblock %}
+{% block page_subtitle %}Complete history of your account activity{% endblock %}
+{% block sidebar_nav %}
+<a href="{% url 'dashboard' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Overview</a>
+<a href="{% url 'my_rentals' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>My Rentals</a>
+<a href="{% url 'deposit' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>Deposit</a>
+<a href="{% url 'withdraw' %}" class="sidebar-link"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Withdraw</a>
+<a href="{% url 'transactions' %}" class="sidebar-link active"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Transactions</a>
+{% endblock %}
+{% block content %}
+<div class="rounded-2xl p-6 card-dark">
+  <div class="flex items-center justify-between mb-6">
+    <h3 class="font-display font-bold text-white text-xl">All Transactions</h3>
+    <span class="badge-blue">{{ transactions.count }} total</span>
+  </div>
+  {% if transactions %}
+  <div class="overflow-x-auto">
+    <table class="w-full" style="min-width:640px;">
+      <thead><tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Type</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Description</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Amount</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Crypto</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Status</th>
+        <th class="text-left pb-3 pr-4 text-xs font-bold tracking-widest uppercase" style="color:#334155;font-family:DM Sans,sans-serif;">Date</th>
+      </tr></thead>
+      <tbody>
+        {% for txn in transactions %}
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+          <td class="py-3.5 pr-4">
+            <span class="{% if txn.transaction_type == 'deposit' %}badge-success{% elif txn.transaction_type == 'withdrawal' %}badge-error{% elif txn.transaction_type == 'rental' %}badge-blue{% else %}badge-pending{% endif %}">{{ txn.transaction_type|title }}</span>
+          </td>
+          <td class="py-3.5 pr-4 text-sm" style="color:#94A3B8;font-family:'DM Sans',sans-serif;max-width:200px;">
+            <span class="truncate block">{{ txn.description|default:"—"|truncatechars:40 }}</span>
+          </td>
+          <td class="py-3.5 pr-4"><span class="font-display font-bold text-white">${{ txn.amount|floatformat:2 }}</span></td>
+          <td class="py-3.5 pr-4 text-sm" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ txn.crypto_type|default:"—" }}</td>
+          <td class="py-3.5 pr-4"><span class="{% if txn.status == 'confirmed' %}badge-success{% elif txn.status == 'pending' %}badge-pending{% else %}badge-error{% endif %}">{{ txn.status|title }}</span></td>
+          <td class="py-3.5 text-xs" style="color:#64748B;font-family:'DM Sans',sans-serif;">{{ txn.created_at|date:"M d, Y · H:i" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="text-center py-16"><svg class="w-12 h-12 mx-auto mb-4" style="color:#1E293B;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+  <p class="text-sm mb-4" style="color:#64748B;font-family:'DM Sans',sans-serif;">No transactions yet</p>
+  <a href="{% url 'deposit' %}" class="btn-blue px-6 py-2.5 text-sm">Make First Deposit</a></div>
+  {% endif %}
+</div>
+{% endblock %}

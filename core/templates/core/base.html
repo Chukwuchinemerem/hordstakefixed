@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{% block title %}Hordstake — Global Oil & Gas Equipment Rental{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{colors:{navy:{'DEFAULT':'#0A1F44','50':'#EEF2FA','800':'#0A1F44','900':'#060D1E'},corporate:{blue:'#2563EB',success:'#22C55E'}},fontFamily:{display:['Syne','sans-serif'],body:['DM Sans','sans-serif']}}}}
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased;}
+.font-display{font-family:'Syne',sans-serif;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:#F3F4F6;}
+::-webkit-scrollbar-thumb{background:#0A1F44;border-radius:99px;}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeInDown{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes popUp{from{opacity:0;transform:translateY(16px) scale(0.96);}to{opacity:1;transform:translateY(0) scale(1);}}
+@keyframes popDown{from{opacity:1;transform:translateY(0) scale(1);}to{opacity:0;transform:translateY(16px) scale(0.96);}}
+@keyframes pulseDot{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.animate-fade-up{animation:fadeInUp 0.5s ease both;}
+.animate-fade-down{animation:fadeInDown 0.35s ease both;}
+.animate-pop-up{animation:popUp 0.4s cubic-bezier(0.16,1,0.3,1) both;}
+.card{background:#fff;border:1px solid #E5E7EB;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);transition:all 0.25s ease;}
+.card:hover,.card-hover:hover{box-shadow:0 4px 24px rgba(10,31,68,0.12);transform:translateY(-2px);}
+.card-dark{background:#1E293B;border:1px solid rgba(255,255,255,0.07);border-radius:12px;}
+.btn-primary{background:#0A1F44;color:#fff;font-family:'DM Sans',sans-serif;font-weight:600;border-radius:8px;transition:all 0.2s ease;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;}
+.btn-primary:hover{background:#060D1E;box-shadow:0 4px 16px rgba(10,31,68,0.3);}
+.btn-blue{background:#2563EB;color:#fff;font-family:'DM Sans',sans-serif;font-weight:600;border-radius:8px;transition:all 0.2s ease;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;}
+.btn-blue:hover{background:#1D4ED8;box-shadow:0 4px 16px rgba(37,99,235,0.35);}
+.btn-outline{border:1.5px solid #E5E7EB;color:#0A1F44;font-family:'DM Sans',sans-serif;font-weight:600;border-radius:8px;transition:all 0.2s ease;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;}
+.btn-outline:hover{border-color:#0A1F44;background:#0A1F44;color:#fff;}
+.input-light{background:#fff;border:1.5px solid #E5E7EB;color:#111827;border-radius:8px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:0.9rem;transition:border-color 0.2s;width:100%;}
+.input-light:focus{border-color:#0A1F44;outline:none;box-shadow:0 0 0 3px rgba(10,31,68,0.08);}
+.input-dark{background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.1);color:#F9FAFB;border-radius:8px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:0.9rem;transition:border-color 0.2s;width:100%;}
+.input-dark:focus{border-color:#2563EB;outline:none;box-shadow:0 0 0 3px rgba(37,99,235,0.15);}
+select.input-dark option{background:#1E293B;color:#F9FAFB;}
+.badge-success{background:rgba(34,197,94,0.12);color:#16A34A;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:99px;font-family:'DM Sans',sans-serif;}
+.badge-pending{background:rgba(234,179,8,0.15);color:#A16207;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:99px;font-family:'DM Sans',sans-serif;}
+.badge-error{background:rgba(239,68,68,0.1);color:#DC2626;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:99px;font-family:'DM Sans',sans-serif;}
+.badge-blue{background:rgba(37,99,235,0.1);color:#2563EB;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:99px;font-family:'DM Sans',sans-serif;}
+.section-label{font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#2563EB;}
+.live-dot{width:8px;height:8px;background:#22C55E;border-radius:50%;animation:pulseDot 1.5s ease infinite;display:inline-block;}
+.line-clamp-2{overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+/* Sidebar */
+.sidebar-panel{transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
+@media(max-width:1023px){
+  .sidebar-panel{transform:translateX(-100%);position:fixed;z-index:50;height:100vh;top:0;left:0;width:280px;}
+  .sidebar-panel.open{transform:translateX(0);}
+}
+.sidebar-link{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:8px;font-size:0.875rem;font-weight:500;font-family:'DM Sans',sans-serif;color:#94A3B8;transition:all 0.2s ease;margin-bottom:2px;text-decoration:none;border-left:3px solid transparent;}
+.sidebar-link:hover{background:rgba(255,255,255,0.06);color:#F9FAFB;}
+.sidebar-link.active{background:rgba(37,99,235,0.15);color:#F9FAFB;border-left-color:#2563EB;}
+#flash-wrap{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:360px;}
+#activity-popup{position:fixed;bottom:100px;left:20px;z-index:9998;max-width:320px;}
+</style>
+{% block extra_head %}{% endblock %}
+</head>
+<body class="{% block body_class %}bg-white text-gray-900{% endblock %}">
+
+<!-- Flash Messages -->
+<div id="flash-wrap">
+{% for message in messages %}
+<div class="flash-toast animate-fade-down flex items-center gap-3 px-5 py-3.5 rounded-xl text-sm font-medium text-white pointer-events-auto"
+  style="box-shadow:0 8px 24px rgba(0,0,0,0.18);{% if message.tags == 'error' %}background:#DC2626;{% elif message.tags == 'success' %}background:#16A34A;{% elif message.tags == 'warning' %}background:#D97706;{% else %}background:#0A1F44;{% endif %}">
+  <span>{% if message.tags == 'error' %}✕{% elif message.tags == 'success' %}✓{% elif message.tags == 'warning' %}⚠{% else %}ℹ{% endif %}</span>
+  <span>{{ message }}</span>
+</div>
+{% endfor %}
+</div>
+
+{% block body %}{% endblock %}
+
+<!-- WhatsApp Float -->
+<a href="https://wa.me/2349121304245" target="_blank" rel="noopener"
+   class="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center hover:scale-110 transition-transform"
+   style="background:#25D366;box-shadow:0 4px 20px rgba(37,211,102,0.4);">
+  <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- Live Activity Popup -->
+<div id="activity-popup" class="hidden">
+  <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-start gap-3" style="box-shadow:0 8px 32px rgba(0,0,0,0.14);">
+    <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#EEF2FA;">
+      <svg class="w-5 h-5" style="color:#0A1F44;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    </div>
+    <div>
+      <div class="flex items-center gap-1.5 mb-0.5"><span class="live-dot"></span><span class="text-xs font-display font-semibold" style="color:#0A1F44;">Live Activity</span></div>
+      <p id="popup-text" class="text-sm text-gray-700 leading-snug" style="font-family:'DM Sans',sans-serif;"></p>
+      <p class="text-xs text-gray-400 mt-1" style="font-family:'DM Sans',sans-serif;">Just now</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+  SMARTSUPP LIVE CHAT — Paste your code here
+  1. Sign up at https://smartsupp.com
+  2. Go to Settings → Chat box → Code
+  3. Replace YOUR_SMARTSUPP_KEY below with your actual key
+  4. The bank wire payment buttons will auto-open this chat
+═══════════════════════════════════════════════════════ -->
+<!--
+<script type="text/javascript">
+var _smartsupp = _smartsupp || {};
+_smartsupp.key = 'YOUR_SMARTSUPP_KEY_HERE';
+window.smartsupp||(function(d) {
+  var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+  s=d.createElement('script');s.type='text/javascript';s.charset='utf-8';s.async=true;
+  s.src='https://www.smartsuppchat.com/loader.js?';c=d.getElementsByTagName('script')[0];
+  c.parentNode.insertBefore(s,c);
+})(document);
+</script>
+-->
+
+<script>
+// Auto-dismiss flash messages
+setTimeout(()=>{
+  document.querySelectorAll('.flash-toast').forEach(el=>{
+    el.style.opacity='0'; el.style.transform='translateY(-8px)'; el.style.transition='all 0.3s ease';
+    setTimeout(()=>el.remove(),300);
+  });
+},5000);
+
+// Live activity popup
+const _acts=[
+  {c:'United States',a:'$48,000',t:'Offshore Jack-Up Rig'},
+  {c:'Saudi Arabia',a:'$95,000',t:'Crude Oil Tanker'},
+  {c:'Norway',a:'$12,500',t:'LNG Cryogenic Tanker'},
+  {c:'Nigeria',a:'$6,200',t:'Underground Storage Tank'},
+  {c:'UAE',a:'$31,000',t:'Oil & Gas Trailer'},
+  {c:'Canada',a:'$8,400',t:'Pipeline Robot'},
+  {c:'Germany',a:'$4,900',t:'Transport Truck'},
+  {c:'UK',a:'$22,000',t:'Wellhead System'},
+  {c:'Qatar',a:'$73,000',t:'FPSO Vessel'},
+  {c:'Australia',a:'$5,600',t:'Oil Tanker Trailer'},
+  {c:'Singapore',a:'$18,000',t:'Petroleum Truck'},
+  {c:'Brazil',a:'$41,000',t:'Drilling Platform'},
+];
+function _showAct(){
+  const p=document.getElementById('activity-popup');
+  const t=document.getElementById('popup-text');
+  if(!p||!t)return;
+  const a=_acts[Math.floor(Math.random()*_acts.length)];
+  t.textContent='Someone from '+a.c+' rented a '+a.t+' for '+a.a;
+  p.classList.remove('hidden');
+  p.style.animation='popUp 0.4s cubic-bezier(0.16,1,0.3,1) both';
+  setTimeout(()=>{p.style.animation='popDown 0.35s ease forwards';setTimeout(()=>{p.classList.add('hidden');p.style.animation='';},350);},5500);
+}
+setTimeout(_showAct,4000);setInterval(_showAct,12000);
+</script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>
